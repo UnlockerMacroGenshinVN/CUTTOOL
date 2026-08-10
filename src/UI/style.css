@@ -46,8 +46,7 @@ body {
 .box-half-float {
     float: left;
     width: calc(50% - 16px);
-    min-height: 280px;
-    height: 320px;
+    height: 270px;
     box-sizing: border-box;
 }
 
@@ -102,16 +101,16 @@ body {
 .run-btn:active { transform: scale(0.97); }
 
 .run-btn.run-active {
-    background: rgba(45, 212, 191, 0.18);
-    border-color: #2dd4bf;
-    color: #2dd4bf;
-    box-shadow: 0 0 20px rgba(45,212,191,0.28), inset 0 0 12px rgba(45,212,191,0.08);
-    animation: runPulse 2s ease-in-out infinite;
+    background: rgba(239, 68, 68, 0.2);
+    border-color: #ef4444;
+    color: #f87171;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.35), inset 0 0 12px rgba(239, 68, 68, 0.15);
+    animation: runPulseRed 2s ease-in-out infinite;
 }
 
-@keyframes runPulse {
-    0%, 100% { box-shadow: 0 0 16px rgba(45,212,191,0.25); }
-    50%       { box-shadow: 0 0 28px rgba(45,212,191,0.45); }
+@keyframes runPulseRed {
+    0%, 100% { box-shadow: 0 0 16px rgba(239, 68, 68, 0.3); }
+    50%       { box-shadow: 0 0 28px rgba(239, 68, 68, 0.6); }
 }
 
 .start-btn {

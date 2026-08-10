@@ -1,6 +1,5 @@
 // ── shared.js ─────────────────────────────────────────────────────────────────
 // Dùng chung cho tất cả trang: quản lý trạng thái RUN MACRO + START GAME
-// Trạng thái được lưu trong localStorage để đồng bộ khi chuyển trang.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Global Browser Navigation Blocker (mouse 3/4) ────────────────────────────
@@ -19,13 +18,10 @@ window.addEventListener('keydown', (e) => {
 }, true);
 
 // ── State keys ───────────────────────────────────────────────────────────────
-const STATE_RUN   = 'macro_run_active';
-const STATE_START = 'macro_start_active';
+const STATE_RUN = 'macro_run_active';
 
-function getRunActive()   { return localStorage.getItem(STATE_RUN)   === '1'; }
-function getStartActive() { return localStorage.getItem(STATE_START) === '1'; }
-function setRunActive(v)   { localStorage.setItem(STATE_RUN,   v ? '1' : '0'); }
-function setStartActive(v) { localStorage.setItem(STATE_START, v ? '1' : '0'); }
+function getRunActive() { return localStorage.getItem(STATE_RUN) === '1'; }
+function setRunActive(v) { localStorage.setItem(STATE_RUN, v ? '1' : '0'); }
 
 // ── Apply visual state to buttons ────────────────────────────────────────────
 function applyRunState(active) {
@@ -36,12 +32,12 @@ function applyRunState(active) {
     if (label) label.textContent = active ? 'STOP Macro' : 'RUN Macro';
 }
 
-function applyStartState(active) {
+function applyStartState() {
     const btn   = document.getElementById('startBtn');
     const label = document.getElementById('startBtnLabel');
     if (!btn) return;
-    btn.classList.toggle('start-active', active);
-    if (label) label.textContent = active ? 'STOP Game' : 'START Game';
+    btn.classList.remove('start-active');
+    if (label) label.textContent = 'START Game';
 }
 
 // ── Toast notification helper (dùng chung nếu không có trang cung cấp) ───────
@@ -93,44 +89,48 @@ async function toggleRun() {
             body: JSON.stringify({ enabled: next })
         });
     } catch {}
+
+    if (typeof checkMacroStatus === 'function') {
+        checkMacroStatus();
+    }
 }
 
-async function toggleStart() {
-    const next = !getStartActive();
-
-    // Khi nhấn START (chuyển từ false → true): khởi chạy game
-    if (next) {
-        let result = null;
-        try {
-            // Ưu tiên IPC Native (Electron)
-            if (window.unlockerNative && typeof window.unlockerNative.launchGame === 'function') {
-                result = await window.unlockerNative.launchGame();
-            } else {
-                // Fallback: gọi HTTP server Python
-                const res = await fetch('http://localhost:5000/launch-game', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                result = await res.json();
-            }
-        } catch (err) {
-            console.error('toggleStart error:', err);
-            _notify('Lỗi khi kết nối tới backend để khởi động game!', true);
-            return; // Không toggle state nếu lỗi
+async function handleLaunchGame() {
+    let result = null;
+    try {
+        if (window.unlockerNative && typeof window.unlockerNative.launchGame === 'function') {
+            result = await window.unlockerNative.launchGame();
+        } else {
+            const res = await fetch('http://localhost:5000/launch-game', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            result = await res.json();
         }
-
-        if (!result || !result.ok) {
-            const errMsg = (result && (result.error || result.message)) || 'Lỗi không xác định khi khởi chạy Launcher_2.exe!';
-            _notify(errMsg, true);
-            return; // Không toggle state nếu khởi chạy thất bại
-        }
-
-        _notify(result.message || 'Khởi động game thành công!');
+    } catch (err) {
+        console.error('handleLaunchGame error:', err);
+        _notify('Lỗi khi kết nối tới backend để khởi động game!', true);
+        return;
     }
 
-    // Toggle state + UI
-    setStartActive(next);
-    applyStartState(next);
+    if (!result || !result.ok) {
+        const errMsg = (result && (result.error || result.message)) || 'Lỗi không xác định khi khởi chạy game!';
+        _notify(errMsg, true);
+        return;
+    }
+
+    _notify(result.message || 'Khởi động game thành công!');
+}
+
+// ── Frontend Heartbeat ─────────────────────────────────────────────────
+function startFrontendHeartbeat() {
+    const sendPing = () => {
+        fetch('http://localhost:5000/heartbeat', { method: 'POST' }).catch(() => {});
+    };
+    sendPing();
+    // Tăng từ 1500ms → 3000ms: giảm tải CPU trên máy Win10 chậm
+    // Backend timeout cũng được tăng 6s → 15s nên vẫn an toàn
+    setInterval(sendPing, 3000);
 }
 
 // ── Init on DOM ready ─────────────────────────────────────────────────────────
@@ -138,10 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const runBtn   = document.getElementById('runBtn');
     const startBtn = document.getElementById('startBtn');
 
-    // Khôi phục trạng thái từ localStorage
     applyRunState(getRunActive());
-    applyStartState(getStartActive());
+    applyStartState();
 
     if (runBtn)   runBtn.addEventListener('click', toggleRun);
-    if (startBtn) startBtn.addEventListener('click', toggleStart);
+    if (startBtn) startBtn.addEventListener('click', handleLaunchGame);
+
+    startFrontendHeartbeat();
 });

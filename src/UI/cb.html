@@ -4,21 +4,11 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Combo - Cứt tool</title>
-    <!-- Material Symbols -->
+    <!-- Local CSS (offline, Win10 compatible) -->
+    <link rel="stylesheet" href="assets/vendor-fonts.css" />
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind CSS (local bundle) -->
+    <script src="assets/vendor/tailwind-cdn.js"></script>
     <!-- Tailwind Config -->
     <script id="tailwind-config">
       tailwind.config = {
@@ -83,20 +73,17 @@
     >
       <div class="flex flex-col flex-1 w-full py-6 overflow-y-auto">
         <!-- Brand Header -->
-        <div class="px-6 mb-6">
+        <div class="px-6 mb-6 flex flex-col items-center text-center">
           <div class="mb-3">
             <img
               src="assets/icon.png"
               alt="Logo"
-              class="w-36 h-auto object-contain drop-shadow-md"
+              class="w-36 h-auto object-contain drop-shadow-md mx-auto"
             />
           </div>
           <h1 class="font-headline-md text-teal font-bold tracking-tight">
             Cứt tool
           </h1>
-          <p class="font-label-sm text-on-surface-variant mt-1">
-            Danh sách Combo
-          </p>
         </div>
         <!-- Navigation Links -->
         <nav class="flex-1 flex flex-col gap-1 px-2">

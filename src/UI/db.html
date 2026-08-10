@@ -4,21 +4,11 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Trang chính - Cứt tool</title>
-    <!-- Material Symbols -->
+    <!-- Local CSS (offline, Win10 compatible) -->
+    <link rel="stylesheet" href="assets/vendor-fonts.css" />
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind CSS (local bundle) -->
+    <script src="assets/vendor/tailwind-cdn.js"></script>
     <!-- Tailwind Config -->
     <script id="tailwind-config">
       tailwind.config = {
@@ -80,20 +70,17 @@
       class="hidden md:flex flex-col bg-surface-container-lowest border-r border-outline/30 fixed left-0 top-0 h-full w-[280px] z-50"
     >
       <div class="flex flex-col flex-1 w-full py-6 overflow-y-auto">
-        <div class="px-6 mb-6">
+        <div class="px-6 mb-6 flex flex-col items-center text-center">
           <div class="mb-3">
             <img
               src="assets/icon.png"
               alt="Logo"
-              class="w-36 h-auto object-contain drop-shadow-md"
+              class="w-36 h-auto object-contain drop-shadow-md mx-auto"
             />
           </div>
           <h1 class="font-headline-md text-teal font-bold tracking-tight">
             Cứt tool
           </h1>
-          <p class="font-label-sm text-on-surface-variant mt-1">
-            Giao diện chính
-          </p>
         </div>
         <nav class="flex-1 flex flex-col gap-1 px-2">
           <a
@@ -134,7 +121,7 @@
     </aside>
     <main class="flex-1 w-full md:ml-[280px] relative">
       <div
-        class="sticky top-0 w-full h-[320px] -z-10 overflow-hidden bg-surface-container-lowest"
+        class="sticky top-0 w-full h-[320px] z-0 overflow-hidden bg-surface-container-lowest group"
         id="hero-container"
       >
         <div
@@ -143,8 +130,33 @@
           style="background-image: url(&quot;assets/defbanner.png&quot;)"
         ></div>
         <div
-          class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"
+          class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none"
         ></div>
+
+        <!-- Banner Title & Controls -->
+        <div id="bannerTitleContainer" class="absolute top-1/2 left-8 -translate-y-1/2 z-20 flex flex-col items-start gap-3 transition-all duration-500 pointer-events-none">
+          <h2 id="bannerAppName" class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tight transition-all duration-500">CutTool</h2>
+          <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-500">v1.0 beta</p>
+        </div>
+        <div class="absolute top-4 right-6 z-20 flex items-center gap-2">
+          <button
+            id="resetBannerBtn"
+            title="Đặt lại ảnh bìa mặc định"
+            class="hidden bg-surface-container-highest/80 hover:bg-red-500/20 text-on-surface-variant hover:text-red-400 border border-outline/40 hover:border-red-500/40 rounded-lg p-2 text-xs font-semibold backdrop-blur-md shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
+          >
+            <span class="material-symbols-outlined text-base">restart_alt</span>
+          </button>
+
+          <button
+            id="changeBannerBtn"
+            title="Thay đổi ảnh bìa trang chính"
+            class="bg-surface-container-highest/80 hover:bg-teal/20 text-on-surface hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg px-3 py-2 text-xs font-semibold backdrop-blur-md shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+          >
+            <span class="material-symbols-outlined text-base">photo_camera</span>
+            <span>Đổi ảnh bìa</span>
+          </button>
+        </div>
+        <input type="file" id="bannerFileInput" accept="image/*" class="hidden" />
       </div>
       <div
         class="relative z-10 w-full min-h-screen bg-background rounded-t-[32px] pt-12 pb-32 shadow-[0_-12px_40px_rgba(0,0,0,0.5)] mt-[-40px]"
@@ -165,7 +177,7 @@
                 <span class="material-symbols-outlined text-teal"
                   >keyboard</span
                 >
-                Combo đang bind phím
+                Combo đang sử dụng
               </h3>
               <div
                 class="flex flex-col gap-2 overflow-y-auto max-h-[230px] pr-1"
@@ -189,7 +201,7 @@
                   <span class="material-symbols-outlined text-teal"
                     >settings</span
                   >
-                  Cấu hình Macro & Backend
+                  Trạng thái Macro
                 </h3>
 
                 <!-- Macro FPS Input -->
@@ -220,12 +232,12 @@
                   <p id="fpsSaveMsg" class="text-xs mt-1.5 text-teal h-4 font-medium"></p>
                 </div>
 
-                <!-- Backend Status Label -->
+                <!-- Macro Status Label -->
                 <div>
                   <span
                     class="block text-sm font-medium text-on-surface-variant mb-1.5"
                   >
-                    Trạng thái Backend Python
+                    Trạng thái Macro
                   </span>
                   <div
                     id="backendStatusBadge"
@@ -234,6 +246,57 @@
                     <span id="backendStatusDot" class="w-2 h-2 rounded-full bg-gray-400"></span>
                     <span id="backendStatusText">Đang kiểm tra...</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Unlocker & Game Config -->
+          <div class="w-full boxes-clearfix mt-6">
+            <div
+              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col"
+              style="margin-right: 32px"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-teal flex items-center gap-2">
+                  <span class="material-symbols-outlined text-teal">speed</span>
+                  Mở khóa FPS
+                </h3>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0 select-none">
+                  <input type="checkbox" id="db_FpsUnlock" class="sr-only peer">
+                  <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+                </label>
+              </div>
+              <div class="mb-4">
+                <label class="block text-sm font-medium text-on-surface-variant mb-1.5">FPS mục tiêu</label>
+                <input type="number" id="db_TargetFps" min="30" max="1000" class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold" />
+              </div>
+              <div class="mt-auto">
+                <button type="button" id="db_saveUnlockerBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-4 py-2 text-sm font-semibold transition-colors active:scale-95 w-full flex items-center justify-center gap-2">
+                  <span class="material-symbols-outlined text-base">save</span> Lưu Unlocker
+                </button>
+                <p id="db_unlockerSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
+              </div>
+            </div>
+
+            <div
+              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col"
+            >
+              <h3 class="text-lg font-semibold text-teal mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-teal">sports_esports</span>
+                Đường dẫn Game
+              </h3>
+              <div class="flex flex-col gap-3">
+                <input type="text" id="db_GamePath" placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe" class="w-full bg-surface-container-high border border-outline/40 rounded-xl px-3 py-2 text-on-surface text-sm focus:border-teal focus:outline-none transition-colors" />
+                
+                <div class="flex gap-2">
+                  <input type="file" id="db_GamePathInput" accept=".exe" class="hidden" />
+                  <button type="button" id="db_browseGameBtn" class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant border border-outline/40 rounded-xl px-3 py-2 text-sm font-semibold transition-colors flex items-center justify-center gap-1.5 flex-1">
+                    <span class="material-symbols-outlined text-base">folder_open</span> Duyệt file
+                  </button>
+                  <button type="button" id="db_saveGamePathBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-3 py-2 text-sm font-semibold transition-colors active:scale-95 flex-1">
+                    Lưu đường dẫn
+                  </button>
                 </div>
               </div>
             </div>

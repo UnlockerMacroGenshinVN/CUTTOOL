@@ -4,21 +4,11 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Tùy chỉnh - Skirk Macro</title>
-    <!-- Material Symbols -->
+    <!-- Local CSS (offline, Win10 compatible) -->
+    <link rel="stylesheet" href="assets/vendor-fonts.css" />
     <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind CSS (local bundle) -->
+    <script src="assets/vendor/tailwind-cdn.js"></script>
     <!-- Tailwind Config -->
     <script id="tailwind-config">
       tailwind.config = {
@@ -83,20 +73,17 @@
       class="hidden md:flex flex-col bg-surface-container-lowest border-r border-outline/30 fixed left-0 top-0 h-full w-[280px] z-50"
     >
       <div class="flex flex-col flex-1 w-full py-6 overflow-y-auto">
-        <div class="px-6 mb-6">
+        <div class="px-6 mb-6 flex flex-col items-center text-center">
           <div class="mb-3">
             <img
               src="assets/icon.png"
               alt="Logo"
-              class="w-36 h-auto object-contain drop-shadow-md"
+              class="w-36 h-auto object-contain drop-shadow-md mx-auto"
             />
           </div>
           <h1 class="font-headline-md text-teal font-bold tracking-tight">
             Cứt tool
           </h1>
-          <p class="font-label-sm text-on-surface-variant mt-1">
-            Cài đặt tùy chỉnh
-          </p>
         </div>
         <nav class="flex-1 flex flex-col gap-1 px-2">
           <a
@@ -146,11 +133,8 @@
             <span>Cấu hình Game & Unlocker</span>
           </div>
           <h2 class="text-2xl md:text-3xl text-on-background font-bold tracking-tight">
-            Tùy chỉnh (Unlocker Config)
+            Tùy chỉnh
           </h2>
-          <p class="text-on-surface-variant text-sm mt-1">
-            Quản lý các thông số mở khóa FPS, đồ họa và tính năng trực tiếp trong file <code class="bg-surface-container-highest px-2 py-0.5 rounded text-teal text-xs">config.ini</code>
-          </p>
         </div>
         <div class="flex items-center gap-3 self-start sm:self-auto">
           <button
@@ -167,18 +151,15 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
 
         <!-- 1. Vsync -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">sync</span>
             </div>
             <div>
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Đồng bộ dọc (V-Sync)
+                Tắt VSync
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Tắt đồng bộ tần số quét khung hình với tốc độ làm mới màn hình.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -188,7 +169,7 @@
         </div>
 
         <!-- 2. FpsUnlock -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">speed</span>
@@ -197,9 +178,6 @@
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                 Mở khóa FPS
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Cho phép vượt qua giới hạn 60 FPS mặc định của trò chơi.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -209,7 +187,7 @@
         </div>
 
         <!-- 3. TargetFps -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1 flex flex-col justify-center">
           <div class="flex items-center justify-between gap-4 mb-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -219,9 +197,6 @@
                 <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                   FPS mục tiêu (Target FPS)
                 </h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">
-                  Tần số khung hình tối đa mong muốn (vd: 120, 144, 240)
-                </p>
               </div>
             </div>
             <input
@@ -247,7 +222,7 @@
         </div>
 
         <!-- 4. FovUnlock -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">center_focus_strong</span>
@@ -256,9 +231,6 @@
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                 Mở khóa FOV (Góc nhìn)
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Cho phép tùy chỉnh độ rộng và tầm nhìn ống kính camera.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -268,7 +240,7 @@
         </div>
 
         <!-- 5. FovValue -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1 flex flex-col justify-center">
           <div class="flex items-center justify-between gap-4 mb-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -278,9 +250,6 @@
                 <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                   Giá trị FOV (FovValue)
                 </h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed">
-                  Mức độ mở rộng ống kính máy ảnh (Mặc định: 60)
-                </p>
               </div>
             </div>
             <input
@@ -305,40 +274,34 @@
           </div>
         </div>
 
-        <!-- 6. HideUID -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <!-- 6. RemoveTeamAnim -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">visibility_off</span>
+              <span class="material-symbols-outlined">groups</span>
             </div>
             <div>
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Ẩn UID người chơi
+                Đổi nhân vật nhanh
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Ẩn mã số UID ở góc dưới màn hình khi chơi game.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
-            <input type="checkbox" id="cfg_HideUID" class="sr-only peer">
+            <input type="checkbox" id="cfg_RemoveTeamAnim" class="sr-only peer">
             <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
           </label>
         </div>
 
         <!-- 7. DisableCameraMove -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">videocam_off</span>
             </div>
             <div>
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Tắt chuyển động Camera
+                Bỏ zoom khi dùng nộ
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Vô hiệu hóa chuyển động xoay và rung lắc camera tự động.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -348,7 +311,7 @@
         </div>
 
         <!-- 8. DisableFog -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">cloud_off</span>
@@ -357,9 +320,6 @@
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                 Tắt sương mù (Disable Fog)
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Loại bỏ các hiệu ứng sương mù giúp tầm nhìn trong xa rõ.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -369,7 +329,7 @@
         </div>
 
         <!-- 9. DisableBurstBlackscreen -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <span class="material-symbols-outlined">flash_off</span>
@@ -378,9 +338,6 @@
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
                 Tắt màn hình đen Kỹ năng nộ
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Tắt hiệu ứng làm mờ/đen nền khi tung kỹ năng Nộ.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
@@ -389,23 +346,20 @@
           </label>
         </div>
 
-        <!-- 10. HideGrassIndiscriminate -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-all duration-200 flex items-start justify-between gap-4 group">
+        <!-- 10. ShowFPS -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">grass</span>
+            <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined">speed</span>
             </div>
             <div>
               <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Ẩn cỏ hàng loạt (Hide Grass)
+                Hiển thị FPS (Show FPS)
               </h3>
-              <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                Ẩn thảm cỏ trên bản đồ để tối ưu hóa hiệu năng FPS.
-              </p>
             </div>
           </div>
           <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
-            <input type="checkbox" id="cfg_HideGrassIndiscriminate" class="sr-only peer">
+            <input type="checkbox" id="cfg_ShowFPS" class="sr-only peer">
             <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
           </label>
         </div>
@@ -423,9 +377,6 @@
               <h3 class="font-bold text-on-background text-base">
                 Đường dẫn file Game (GenshinImpact.exe)
               </h3>
-              <p class="text-xs text-on-surface-variant leading-relaxed">
-                Đường dẫn tới tập tin thực thi của trò chơi để nút <strong>START Game</strong> khởi chạy với <strong>Launcher_2.exe</strong>
-              </p>
             </div>
           </div>
           <span id="gamePathStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">

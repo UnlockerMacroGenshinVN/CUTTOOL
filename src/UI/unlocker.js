@@ -86,7 +86,7 @@ function loadUnlockerConfig(app) {
         DisableFog: 1,
         RemoveTeamAnim: 1,
         DisableBurstBlackscreen: 1,
-        HideGrassIndiscriminate: 0,
+        ShowFPS: 0,
     };
 
     if (!fs.existsSync(iniPath)) return result;
@@ -144,12 +144,6 @@ function saveUnlockerConfig(data, app) {
     ) {
         data.DisableBurstBlackscreen = data.DisableBurstBackscreen;
     }
-    if (
-        data.HideGrassIndicriminate !== undefined &&
-        data.HideGrassIndiscriminate === undefined
-    ) {
-        data.HideGrassIndiscriminate = data.HideGrassIndicriminate;
-    }
 
     const fileVal = data.File || "CUTTOOL.UnlockerIsland.dll";
     const lines = [`File=${fileVal}\r\n\r\n`];
@@ -166,7 +160,7 @@ function saveUnlockerConfig(data, app) {
         "DisableFog",
         "RemoveTeamAnim",
         "DisableBurstBlackscreen",
-        "HideGrassIndiscriminate",
+        "ShowFPS",
     ];
 
     sections.forEach((sec) => {

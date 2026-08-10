@@ -4,6 +4,16 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 
+// ── Win10 / older GPU compatibility flags ─────────────────────────────────────
+// Ngăn crash renderer trên Win10 máy cũ với GPU driver không tương thích
+app.commandLine.appendSwitch('disable-gpu-sandbox');
+app.commandLine.appendSwitch('disable-software-rasterizer');
+app.commandLine.appendSwitch('ignore-gpu-blocklist');
+app.commandLine.appendSwitch('enable-features', 'VaapiVideoDecoder');
+// Tắt hardware acceleration nếu gặp crash (fallback an toàn)
+// Bỏ comment dòng dưới nếu máy vẫn crash:
+// app.disableHardwareAcceleration();
+
 let pyProc = null;
 let mainWin = null;
 
@@ -23,7 +33,8 @@ function logE(msg) {
 }
 
 // ── Kiểm tra backend sẵn sàng (poll /config) ─────────────────────────────────
-function waitForBackend(maxMs = 30000, intervalMs = 300) {
+// Tăng timeout 30s → 45s cho máy Win10 chậm khởi động lâu hơn
+function waitForBackend(maxMs = 45000, intervalMs = 400) {
     return new Promise((resolve, reject) => {
         const deadline = Date.now() + maxMs;
         function probe() {
@@ -61,7 +72,8 @@ function startPython() {
     logE(`platform: ${process.platform}`);
 
     if (!isPackaged) {
-        // Dev Mode: Chạy trực tiếp file Python trong thư mục macro bằng pyw (không hiện cửa sổ console) / python3
+        // Dev Mode: Dùng pyw (Python windowed) - KHÔNG hiện cửa sổ console đen
+        // pyw.exe đi kèm với mọi bản cài Python 3.x trên Windows
         pyPath = process.platform === 'win32' ? 'pyw' : 'python3';
         args = [path.join(__dirname, '..', 'macro', 'main.py')];
         logE(`[Dev Mode] Đang chạy file Python trực tiếp: ${args[0]}`);
@@ -166,6 +178,45 @@ ipcMain.handle('launch-game', async (event, gamePath) => {
     return unlocker.launchGame(gamePath, app);
 });
 
+ipcMain.handle('select-game-path', async () => {
+    const result = await dialog.showOpenDialog(mainWin, {
+        title: 'Chọn tập tin GenshinImpact.exe',
+        properties: ['openFile'],
+        filters: [
+            { name: 'Executable (*.exe)', extensions: ['exe'] },
+            { name: 'Tất cả tập tin (*.*)', extensions: ['*'] }
+        ]
+    });
+    if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
+        return result.filePaths[0];
+    }
+    return null;
+});
+
+ipcMain.handle('select-banner-image', async () => {
+    const result = await dialog.showOpenDialog(mainWin, {
+        title: 'Chọn ảnh bìa trang chính',
+        properties: ['openFile'],
+        filters: [
+            { name: 'Hình ảnh (*.png; *.jpg; *.jpeg; *.webp; *.bmp; *.gif)', extensions: ['png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif'] },
+            { name: 'Tất cả tập tin (*.*)', extensions: ['*'] }
+        ]
+    });
+    if (!result.canceled && result.filePaths && result.filePaths.length > 0) {
+        const filePath = result.filePaths[0];
+        try {
+            const data = fs.readFileSync(filePath);
+            const ext = path.extname(filePath).replace('.', '').toLowerCase();
+            const mimeType = ext === 'svg' ? 'image/svg+xml' : (ext === 'jpg' ? 'image/jpeg' : `image/${ext}`);
+            return `data:${mimeType};base64,${data.toString('base64')}`;
+        } catch (e) {
+            logE(`Lỗi đọc tệp ảnh banner: ${e.message}`);
+            return null;
+        }
+    }
+    return null;
+});
+
 async function createWindow() {
     mainWin = new BrowserWindow({
         width: 1280,
@@ -189,10 +240,19 @@ async function createWindow() {
         }
     });
 
-    // Bắt lỗi renderer crash
+    // Bắt lỗi renderer crash – tự động reload thay vì chỉ hiện dialog
     mainWin.webContents.on('render-process-gone', (event, details) => {
         logE(`Renderer crashed: reason=${details.reason}, exitCode=${details.exitCode}`);
-        dialog.showErrorBox('Renderer Crash', `Giao diện bị crash:\nReason: ${details.reason}\nExitCode: ${details.exitCode}\n\nXem log: ${LOG_FILE}`);
+        // Với lý do 'killed' hoặc 'oom' thử reload tự động trước
+        if (details.reason === 'killed' || details.reason === 'oom') {
+            logE('Thử reload renderer sau crash…');
+            setTimeout(() => { try { mainWin.reload(); } catch {} }, 1000);
+        } else {
+            dialog.showErrorBox(
+                'Renderer Crash',
+                `Giao diện bị crash:\nReason: ${details.reason}\nExitCode: ${details.exitCode}\n\nMẹo Win10: Nếu hay bị crash, thêm flag --disable-gpu khi chạy.\nXem log: ${LOG_FILE}`
+            );
+        }
     });
 
     mainWin.webContents.on('did-fail-load', (event, errorCode, errorDesc, url) => {
