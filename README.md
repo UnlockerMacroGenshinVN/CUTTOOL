@@ -1,4 +1,4 @@
-# Skirk Macro
+# **Skirk Macro**
 
 ## Tính năng
 
@@ -8,6 +8,7 @@
 - Combo tự chỉnh độ trễ phù hợp đối với FPS người dùng nhập vào
 - Người dùng có thể tự do bật tắt Macro để không ảnh hưởng tới công việc khác mà không cần đóng app
 - Không yêu cầu về chuột xịn
+- Tích hợp unlock Fps và 1 số unlocker (injection) khác
 
 ## CÁCH TẢI
 - Truy cập vào Link [DOWNLOAD](https://github.com/hoanfgzang-blip/Skirk-macro/releases)
@@ -75,14 +76,13 @@ Script tạo backend Python `Cryss` và đóng gói Electron cho Linux. File ch�
 build/app-linux/linux-unpacked/Cryss
 ```
 
-## Nhược điểm của ứng dụng
-- Đây không phải driver chuột nên nút được gán macro sẽ bị nhận diện là được sử dụng
-- Phải gán chuẩn xác FPS trung bình thấp khi thực chiến chứ không phải FPS trung bình nếu máy không quá mạnh
-- Khi chạy mà bị drop FPS thì macro sẽ xảy ra hiện tượng cancel bị lỗi
-- Khi thực hiện thao tác đánh thường máy yếu thường có hiện tượng drop FPS và CPU bị chiếm dụng cao ở 1 coreA
-- Chỉ khuyến khích cho người có máy khoẻ
+## Các nguồn tham khảo
+- Fufu.UnlockerIsland
+- Các setup Macro app Xmouse trên bilibili Trung
 
 ## Liên hệ
 
 - Discord: `rururu_11`
 - Facebook: [HoanfGZang.UwU](https://www.facebook.com/HoanfGZang.UwU)
+
+Đây là repo do người Việt tạo ra, kết hợp với AI coding để xây dựng giao diện, mọi thứ trên ứng dụng đều là open source và học hỏi từ các open source free khác, vui lòng không sử dụng cho mục đích thương mại. Có thể hỗ trợ, đóng góp ý kiến hoặc donate thông qua thông tin liên hệ đã để lại
