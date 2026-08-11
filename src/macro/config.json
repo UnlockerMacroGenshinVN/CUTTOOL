@@ -1,17 +1,14 @@
 {
   "comboSignKeys": {
-    "C0:  Combo Skirk C0 EQA 120fps": "mouse_3"
+    "C0:  Combo Skirk C0 EQA 120fps": "mouse_4"
   },
   "FPS": 120,
   "customCombos": [
     {
       "id": "2a03e89e-46c4-4c9b-b09d-811d0f8aeac4",
       "name": "aaaa",
-      "hotkey": "mouse_4",
       "timeline": [
         "skke",
-        "skk2as",
-        "skk2as",
         "skk2aq",
         "skk2as",
         "skk2as",
@@ -27,15 +24,11 @@
         "skk3aw",
         "skk2as",
         "skk2as",
-        "skk2az"
+        "skk5a"
       ],
       "pythonSequence": [
         "skke",
         "is_no_key_pressed",
-        "skk2as",
-        "is_no_key_pressed",
-        "skk2as",
-        "is_no_key_pressed",
         "skk2aq",
         "is_no_key_pressed",
         "skk2as",
@@ -66,7 +59,42 @@
         "is_no_key_pressed",
         "skk2as",
         "is_no_key_pressed",
-        "skk2az"
+        "skk5a"
+      ]
+    },
+    {
+      "id": "bd39374c-2eca-4ed9-97ab-f62de1636057",
+      "name": "2",
+      "hotkey": "mouse_3",
+      "timeline": [
+        "skke",
+        "skk2azs",
+        "skk2as",
+        "skk3aw",
+        "skk2as",
+        "skk2as",
+        "skk3aw",
+        "skk2azs",
+        "skk5as"
+      ],
+      "pythonSequence": [
+        "skke",
+        "is_no_key_pressed",
+        "skk2azs",
+        "is_no_key_pressed",
+        "skk2as",
+        "is_no_key_pressed",
+        "skk3aw",
+        "is_no_key_pressed",
+        "skk2as",
+        "is_no_key_pressed",
+        "skk2as",
+        "is_no_key_pressed",
+        "skk3aw",
+        "is_no_key_pressed",
+        "skk2azs",
+        "is_no_key_pressed",
+        "skk5as"
       ]
     }
   ]
