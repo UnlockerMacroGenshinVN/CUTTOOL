@@ -16,7 +16,7 @@
 - Đối với WINDOWS: tải file .zip và giải nén, đối với Linux thì theo dõi cách build ở dưới
 - Mở folder được giải nén và chạy file Cryss.exe ngay đầu
 
-**DEV**
+# **DEV**
 ## Yêu cầu
 - Linux
 - Windows

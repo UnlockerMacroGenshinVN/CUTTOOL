@@ -87,6 +87,10 @@ function loadUnlockerConfig(app) {
         RemoveTeamAnim: 1,
         DisableBurstBlackscreen: 1,
         ShowFPS: 0,
+        BlockNetwork: 0,
+        EnableNetworkToggle: 0,
+        NetworkToggleKey: 122,
+        ToggleKey: 36,
     };
 
     if (!fs.existsSync(iniPath)) return result;
@@ -161,13 +165,36 @@ function saveUnlockerConfig(data, app) {
         "RemoveTeamAnim",
         "DisableBurstBlackscreen",
         "ShowFPS",
+        "BlockNetwork",
+        "EnableNetworkToggle",
+        "NetworkToggleKey",
+        "ToggleKey",
+        "DumpOffsets",
+        "DebugConsole",
     ];
+
+    const writtenSections = new Set();
 
     sections.forEach((sec) => {
         if (data[sec] !== undefined) {
             let val = data[sec];
             if (typeof val === "boolean") val = val ? 1 : 0;
             lines.push(`[${sec}]\r\nValue=${val}\r\n\r\n`);
+            writtenSections.add(sec);
+        }
+    });
+
+    // Ghi thêm các section bổ sung nếu có trong data
+    Object.keys(data).forEach((k) => {
+        if (
+            !writtenSections.has(k) &&
+            k !== "File" &&
+            k !== "GamePath" &&
+            k !== "DisableBurstBackscreen"
+        ) {
+            let val = data[k];
+            if (typeof val === "boolean") val = val ? 1 : 0;
+            lines.push(`[${k}]\r\nValue=${val}\r\n\r\n`);
         }
     });
 

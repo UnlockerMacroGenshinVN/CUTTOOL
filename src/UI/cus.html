@@ -328,24 +328,6 @@
           </label>
         </div>
 
-        <!-- 9. DisableBurstBlackscreen -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">flash_off</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Tắt màn hình đen Kỹ năng nộ
-              </h3>
-            </div>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
-            <input type="checkbox" id="cfg_DisableBurstBlackscreen" class="sr-only peer">
-            <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
-          </label>
-        </div>
-
         <!-- 10. ShowFPS -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
@@ -362,6 +344,69 @@
             <input type="checkbox" id="cfg_ShowFPS" class="sr-only peer">
             <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
           </label>
+        </div>
+
+        <!-- 11. HideUID -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined">visibility_off</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                Ẩn UID (Hide UID)
+              </h3>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+            <input type="checkbox" id="cfg_HideUID" class="sr-only peer">
+            <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+          </label>
+        </div>
+
+        <!-- 12. EnableNetworkToggle -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined">wifi_off</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                Bật/Tắt ngắt mạng
+              </h3>
+              <p class="text-xs text-on-surface-variant">ToggleNetwork</p>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+            <input type="checkbox" id="cfg_EnableNetworkToggle" class="sr-only peer">
+            <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+          </label>
+        </div>
+
+        <!-- 13. NetworkToggleKey -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
+          <div class="flex gap-4 items-center">
+            <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined">keyboard</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                Phím tắt ngắt mạng
+              </h3>
+              <p class="text-xs text-on-surface-variant">NetworkToggleKey</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              id="btn_NetworkToggleKey"
+              class="px-3.5 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest border border-teal/40 hover:border-teal text-teal font-mono font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+              title="Nhấn để đổi phím tắt ngắt mạng"
+            >
+              <span class="material-symbols-outlined text-base">tune</span>
+              <span id="label_NetworkToggleKey">F11 (122)</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -407,6 +452,61 @@
         </div>
       </div>
     </main>
+
+    <!-- Key Binding Modal for NetworkToggleKey -->
+    <div
+      class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4"
+      id="networkKeyBindModal"
+    >
+      <div
+        class="bg-surface-container border border-outline/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-center flex flex-col items-center gap-4"
+      >
+        <div
+          class="w-12 h-12 bg-teal/15 text-teal border border-teal/30 rounded-xl flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined text-2xl">wifi_off</span>
+        </div>
+        <h3 class="text-lg font-bold text-on-background">
+          Gán phím tắt Ngắt mạng (ToggleNetwork)
+        </h3>
+        <p class="text-sm text-on-surface-variant">
+          Nhấn phím bất kỳ trên bàn phím hoặc nút chuột để gán.<br />
+          <span class="text-xs text-teal/80">Nhấn <kbd class="px-1.5 py-0.5 bg-surface-container-high border border-outline/40 rounded font-mono">ESC</kbd> để hủy</span>
+        </p>
+
+        <div
+          class="px-4 py-3 bg-surface-container-high border border-teal/40 rounded-xl font-mono text-teal text-sm w-full font-semibold animate-pulse flex items-center justify-center gap-2"
+          id="networkBindStatusBadge"
+        >
+          <span class="material-symbols-outlined text-base">radio_button_checked</span>
+          <span id="networkBindStatusText">Đang chờ bấm phím hoặc click chuột...</span>
+        </div>
+
+        <!-- Chọn nhanh từ danh sách KEYMAP -->
+        <div class="w-full text-left pt-1">
+          <label for="quickKeySelect" class="text-xs text-on-surface-variant block mb-1.5 font-medium">Hoặc chọn nhanh từ danh sách:</label>
+          <select id="quickKeySelect" class="w-full bg-surface-container-high border border-outline/40 rounded-xl px-3 py-2 text-sm text-on-surface focus:border-teal focus:outline-none transition-colors cursor-pointer">
+          </select>
+        </div>
+
+        <div class="flex gap-3 w-full mt-2">
+          <button
+            type="button"
+            class="flex-1 py-2 px-4 rounded-lg bg-teal/15 hover:bg-teal/25 text-teal border border-teal/30 text-xs font-semibold transition-colors cursor-pointer"
+            id="resetDefaultNetworkKeyBtn"
+          >
+            Mặc định (F11)
+          </button>
+          <button
+            type="button"
+            class="flex-1 py-2 px-4 rounded-lg bg-surface-container-highest hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors cursor-pointer"
+            id="closeNetworkKeyBindBtn"
+          >
+            Đóng / Hủy
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="shared.js"></script>
     <script src="cus.js"></script>

@@ -36,9 +36,60 @@ if not exist "%PLUGINS_DIR%" (
     mkdir "%PLUGINS_DIR%"
 )
 
-:: Tạo config.ini cho plugin nếu chưa có
+:: Tao config.ini cho plugin neu chua co
 if not exist "%PLUGINS_DIR%\config.ini" (
-    echo File=CUTTOOL.UnlockerIsland.dll> "%PLUGINS_DIR%\config.ini"
+    if exist "%~dp0config.ini" (
+        copy /Y "%~dp0config.ini" "%PLUGINS_DIR%\config.ini" >nul 2>&1
+    ) else (
+        (
+        echo File=CUTTOOL.UnlockerIsland.dll
+        echo.
+        echo [DebugConsole]
+        echo Value=0
+        echo.
+        echo [FpsUnlock]
+        echo Value=0
+        echo.
+        echo [TargetFps]
+        echo Value=60
+        echo.
+        echo [VSync]
+        echo Value=1
+        echo.
+        echo [FovUnlock]
+        echo Value=0
+        echo.
+        echo [FovValue]
+        echo Value=45.0
+        echo.
+        echo [DisableCameraMove]
+        echo Value=0
+        echo.
+        echo [RemoveTeamAnim]
+        echo Value=0
+        echo.
+        echo [DisableFog]
+        echo Value=0
+        echo.
+        echo [HideUID]
+        echo Value=0
+        echo.
+        echo [BlockNetwork]
+        echo Value=0
+        echo.
+        echo [EnableNetworkToggle]
+        echo Value=0
+        echo.
+        echo [NetworkToggleKey]
+        echo Value=122
+        echo.
+        echo [ToggleKey]
+        echo Value=36
+        echo.
+        echo [DumpOffsets]
+        echo Value=0
+        ) > "%PLUGINS_DIR%\config.ini"
+    )
     echo [INFO] Da tao Plugins\UnlockerIsland\config.ini
 )
 

@@ -140,6 +140,8 @@ _UNLOCKER_DEFAULTS = {
     "FovUnlock": 1, "FovValue": 60, "HideUID": 0,
     "DisableCameraMove": 1, "DisableFog": 1,
     "RemoveTeamAnim": 1, "DisableBurstBlackscreen": 1, "ShowFPS": 0,
+    "BlockNetwork": 0, "EnableNetworkToggle": 0,
+    "NetworkToggleKey": 122, "ToggleKey": 36,
 }
 
 
@@ -180,6 +182,7 @@ _UNLOCKER_SECTIONS = [
     "GamePath", "Vsync", "FpsUnlock", "TargetFps", "FovUnlock", "FovValue",
     "HideUID", "DisableCameraMove", "DisableFog", "RemoveTeamAnim",
     "DisableBurstBlackscreen", "ShowFPS",
+    "BlockNetwork", "EnableNetworkToggle", "NetworkToggleKey", "ToggleKey",
 ]
 
 
