@@ -1,9 +1,0 @@
-[2026-08-15 08:55:32] === Launcher Session Started ===
-[2026-08-15 08:55:32] Got game path from startup arguments: C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe
-[2026-08-15 08:55:32] Game working directory: C:\Program Files\HoYoPlay\games\Genshin Impact game
-[2026-08-15 08:55:32] Suspended game process successfully created, configuring plugin injection queue...
-[2026-08-15 08:55:32] Recursively scanning Plugins directory for config.ini: D:\UnlockerIsland.new\x64\Release\Plugins
-[2026-08-15 08:55:32] Found plugin pointed by config: CUTTOOL.UnlockerIsland.dll, configuring injection...
-[2026-08-15 08:55:32] Plugin added to load queue: CUTTOOL.UnlockerIsland.dll
-[2026-08-15 08:55:32] Plugin loading queue completed, planned to inject: 1 plugins
-[2026-08-15 08:55:32] === Game main thread resumed and executing injection tasks ===
