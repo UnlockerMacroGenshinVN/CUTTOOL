@@ -19,3 +19,5 @@ dist/
 *.spec
 
 node_modules/
+
+unlocker/
