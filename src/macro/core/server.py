@@ -12,6 +12,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -103,7 +104,7 @@ def launch_game(game_path=None):
 
 
 def select_file_via_dialog():
-    """Mở hộp thoại chọn file qua PowerShell (Windows)."""
+    """Mở hộp thoại chọn file (PowerShell)."""
     cmd = (
         "[System.Reflection.Assembly]::LoadWithPartialName('System.windows.forms') | Out-Null; "
         "$dialog = New-Object System.Windows.Forms.OpenFileDialog; "

@@ -8,7 +8,6 @@
     "package": "pnpm package:win",
     "package:win": "electron-builder --win --dir",
     "package:win:installer": "electron-builder --win nsis",
-    "package:linux": "electron-builder --linux --dir --config.directories.output=../../build/app-linux",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "build": {
@@ -35,17 +34,6 @@
         {
           "from": "../unlocker",
           "to": "unlocker"
-        }
-      ]
-    },
-    "linux": {
-      "target": "dir",
-      "executableName": "Cryss",
-      "icon": "icon.png",
-      "extraResources": [
-        {
-          "from": "../../build/dist/Cryss",
-          "to": "Cryss"
         }
       ]
     },

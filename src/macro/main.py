@@ -17,14 +17,14 @@ import os
 import sys
 import threading
 
-# ── Admin elevation (chỉ Win32) ───────────────────────────────────────────────
+# ── Admin elevation (Win32) ───────────────────────────────────────────────────
 def _is_admin():
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except Exception:
         return False
 
-if sys.platform == "win32" and not _is_admin():
+if not _is_admin():
     if getattr(sys, "frozen", False):
         # Packaged: re-launch chính exe với quyền admin
         ctypes.windll.shell32.ShellExecuteW(
@@ -40,8 +40,7 @@ if sys.platform == "win32" and not _is_admin():
         )
     sys.exit(0)   # exit 0 → Electron không báo lỗi "non-zero exit code"
 
-if sys.platform == "win32":
-    print(ctypes.windll.shell32.IsUserAnAdmin())
+print(ctypes.windll.shell32.IsUserAnAdmin())
 
 # ── Import core modules ───────────────────────────────────────────────────────
 # Thêm thư mục cha vào sys.path để import `core.*` hoạt động dù chạy trực tiếp
