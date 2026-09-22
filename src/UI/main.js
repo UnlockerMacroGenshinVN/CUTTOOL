@@ -1,8 +1,9 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
+const https = require('https');
 
 // ── Win10 / older GPU compatibility flags ─────────────────────────────────────
 // Ngăn crash renderer trên Win10 máy cũ với GPU driver không tương thích
@@ -215,6 +216,146 @@ ipcMain.handle('select-banner-image', async () => {
         }
     }
     return null;
+});
+
+// ── Version & Update Checker ─────────────────────────────────────────────────
+
+/**
+ * Đọc version từ version.json (Single Source of Truth)
+ * Hỗ trợ cả dev mode (đọc từ __dirname) và packaged mode (đọc từ resources)
+ */
+function getAppVersion() {
+    try {
+        // Thử đọc từ thư mục hiện tại trước (dev mode)
+        let versionPath = path.join(__dirname, 'version.json');
+        if (!fs.existsSync(versionPath)) {
+            // Packaged mode: version.json nằm trong resources
+            versionPath = path.join(process.resourcesPath, 'version.json');
+        }
+        const data = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
+        return data.version || '0.0.0';
+    } catch (e) {
+        logE(`Lỗi đọc version.json: ${e.message}`);
+        return '0.0.0';
+    }
+}
+
+/**
+ * So sánh semver đơn giản: parse "v1.2.3" hoặc "1.2.3" thành mảng [1,2,3]
+ * Trả về: 1 nếu a > b, -1 nếu a < b, 0 nếu bằng nhau
+ */
+function compareSemver(a, b) {
+    const parse = (v) => v.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+    const pa = parse(a);
+    const pb = parse(b);
+    const len = Math.max(pa.length, pb.length);
+    for (let i = 0; i < len; i++) {
+        const na = pa[i] || 0;
+        const nb = pb[i] || 0;
+        if (na > nb) return 1;
+        if (na < nb) return -1;
+    }
+    return 0;
+}
+
+/**
+ * Gọi GitHub Releases API để lấy thông tin phiên bản mới nhất
+ * Sử dụng Node.js built-in https module (không cần dependency ngoài)
+ */
+function fetchLatestRelease() {
+    return new Promise((resolve, reject) => {
+        const options = {
+            hostname: 'api.github.com',
+            path: '/repos/UnlockerMacroGenshinVN/CUTTOOL/releases/latest',
+            method: 'GET',
+            headers: {
+                'User-Agent': 'CutTool-Updater',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            timeout: 10000
+        };
+
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', chunk => { data += chunk; });
+            res.on('end', () => {
+                try {
+                    if (res.statusCode === 200) {
+                        resolve(JSON.parse(data));
+                    } else {
+                        reject(new Error(`GitHub API trả về status ${res.statusCode}`));
+                    }
+                } catch (e) {
+                    reject(new Error(`Lỗi parse JSON từ GitHub: ${e.message}`));
+                }
+            });
+        });
+
+        req.on('error', (e) => reject(new Error(`Lỗi kết nối GitHub: ${e.message}`)));
+        req.on('timeout', () => { req.destroy(); reject(new Error('GitHub API timeout')); });
+        req.end();
+    });
+}
+
+// ── IPC: Lấy phiên bản hiện tại ──────────────────────────────────────────────
+ipcMain.handle('get-app-version', async () => {
+    return getAppVersion();
+});
+
+// ── IPC: Kiểm tra cập nhật từ GitHub ──────────────────────────────────────────
+ipcMain.handle('check-for-update', async () => {
+    try {
+        const currentVersion = getAppVersion();
+        const release = await fetchLatestRelease();
+        const latestVersion = (release.tag_name || '').replace(/^v/i, '');
+        const hasUpdate = compareSemver(latestVersion, currentVersion) > 0;
+
+        // Lấy URL download từ assets (file .rar hoặc .zip)
+        let downloadUrl = '';
+        if (release.assets && release.assets.length > 0) {
+            downloadUrl = release.assets[0].browser_download_url || '';
+        }
+
+        logE(`[Update Check] current=${currentVersion}, latest=${latestVersion}, hasUpdate=${hasUpdate}`);
+
+        return {
+            hasUpdate,
+            currentVersion,
+            latestVersion,
+            releaseNotes: release.body || '',
+            downloadUrl,
+            htmlUrl: release.html_url || ''
+        };
+    } catch (e) {
+        logE(`[Update Check] Lỗi: ${e.message}`);
+        return {
+            hasUpdate: false,
+            currentVersion: getAppVersion(),
+            latestVersion: '',
+            releaseNotes: '',
+            downloadUrl: '',
+            htmlUrl: '',
+            error: e.message
+        };
+    }
+});
+
+// ── IPC: Mở URL ngoài trình duyệt (có validation bảo mật) ───────────────────
+ipcMain.handle('open-external-url', async (_, url) => {
+    // Chỉ cho phép mở URL từ github.com để tránh lỗ hổng bảo mật
+    try {
+        const parsed = new URL(url);
+        if (parsed.hostname === 'github.com' || parsed.hostname.endsWith('.github.com')) {
+            await shell.openExternal(url);
+            return { ok: true };
+        } else {
+            logE(`[Security] Chặn mở URL không phải GitHub: ${url}`);
+            return { ok: false, error: 'Chỉ cho phép mở link GitHub' };
+        }
+    } catch (e) {
+        logE(`[open-external-url] Lỗi: ${e.message}`);
+        return { ok: false, error: e.message };
+    }
 });
 
 async function createWindow() {

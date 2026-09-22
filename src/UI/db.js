@@ -154,6 +154,133 @@ async function checkMacroStatus() {
     }
 }
 
+// ── Update Checker ────────────────────────────────────────────────────────────
+let _updateInfo = null; // Lưu trữ thông tin update để dùng khi click bell
+
+/**
+ * Khởi tạo hệ thống kiểm tra cập nhật
+ * - Đọc version từ main process (version.json) để hiển thị trên banner
+ * - Auto-check update 1 lần sau khi trang load (delay 3s)
+ * - Click bell: hiện modal nếu có update, hiện toast nếu không
+ */
+async function initUpdateChecker() {
+    const bellIcon = document.getElementById('updateBellIcon');
+    const badgeDot = document.getElementById('updateBadgeDot');
+    const checkUpdateBtn = document.getElementById('checkUpdateBtn');
+    const updateModal = document.getElementById('updateModal');
+    const updateVersionInfo = document.getElementById('updateVersionInfo');
+    const updateReleaseNotes = document.getElementById('updateReleaseNotes');
+    const updateDownloadBtn = document.getElementById('updateDownloadBtn');
+    const updateCloseBtn = document.getElementById('updateCloseBtn');
+    const bannerAppVersion = document.getElementById('bannerAppVersion');
+
+    // 1. Đọc phiên bản hiện tại từ version.json và cập nhật hiển thị trên banner
+    if (window.unlockerNative && typeof window.unlockerNative.getAppVersion === 'function') {
+        try {
+            const version = await window.unlockerNative.getAppVersion();
+            if (bannerAppVersion && version && version !== '0.0.0') {
+                bannerAppVersion.textContent = `v${version}`;
+            }
+        } catch (e) {
+            console.warn('Không thể đọc phiên bản ứng dụng:', e);
+        }
+    }
+
+    // 2. Hàm thực hiện kiểm tra update
+    async function performUpdateCheck() {
+        if (!window.unlockerNative || typeof window.unlockerNative.checkForUpdate !== 'function') {
+            console.warn('Update checker API không khả dụng');
+            return;
+        }
+
+        try {
+            const result = await window.unlockerNative.checkForUpdate();
+            _updateInfo = result;
+
+            if (result.hasUpdate) {
+                // Đổi icon chuông sang chuông có dấu chấm than
+                if (bellIcon) bellIcon.textContent = 'notification_important';
+                if (badgeDot) badgeDot.classList.remove('hidden');
+                if (checkUpdateBtn) {
+                    checkUpdateBtn.title = `Có bản cập nhật mới: v${result.latestVersion}`;
+                    checkUpdateBtn.classList.add('text-amber-400');
+                    checkUpdateBtn.classList.remove('text-on-surface-variant');
+                }
+                console.log(`[Update] Có phiên bản mới: v${result.latestVersion} (hiện tại: v${result.currentVersion})`);
+            } else {
+                // Giữ nguyên icon chuông bình thường
+                if (bellIcon) bellIcon.textContent = 'notifications';
+                if (badgeDot) badgeDot.classList.add('hidden');
+                if (checkUpdateBtn) {
+                    checkUpdateBtn.title = 'Bạn đang sử dụng phiên bản mới nhất';
+                    checkUpdateBtn.classList.remove('text-amber-400');
+                }
+                if (result.error) {
+                    console.warn(`[Update] Lỗi kiểm tra: ${result.error}`);
+                } else {
+                    console.log(`[Update] Đang sử dụng phiên bản mới nhất: v${result.currentVersion}`);
+                }
+            }
+        } catch (e) {
+            console.error('[Update] Lỗi kiểm tra cập nhật:', e);
+        }
+    }
+
+    // 3. Click bell button
+    if (checkUpdateBtn) {
+        checkUpdateBtn.addEventListener('click', () => {
+            if (_updateInfo && _updateInfo.hasUpdate) {
+                // Hiện modal thông tin update
+                if (updateVersionInfo) {
+                    updateVersionInfo.textContent = `Phiên bản hiện tại: v${_updateInfo.currentVersion} → Phiên bản mới: v${_updateInfo.latestVersion}`;
+                }
+                if (updateReleaseNotes) {
+                    updateReleaseNotes.textContent = _updateInfo.releaseNotes || 'Không có ghi chú phát hành.';
+                }
+                if (updateModal) updateModal.classList.remove('hidden');
+            } else {
+                // Hiện toast thông báo đã mới nhất
+                _notify('✓ Bạn đang sử dụng phiên bản mới nhất!');
+                // Gọi lại check để cập nhật (manual refresh)
+                performUpdateCheck();
+            }
+        });
+    }
+
+    // 4. Nút "Tải về" trong modal → mở link GitHub release
+    if (updateDownloadBtn) {
+        updateDownloadBtn.addEventListener('click', async () => {
+            if (_updateInfo) {
+                // Ưu tiên mở trang release HTML, fallback sang download trực tiếp
+                const url = _updateInfo.htmlUrl || _updateInfo.downloadUrl;
+                if (url && window.unlockerNative && typeof window.unlockerNative.openExternalUrl === 'function') {
+                    await window.unlockerNative.openExternalUrl(url);
+                }
+            }
+            if (updateModal) updateModal.classList.add('hidden');
+        });
+    }
+
+    // 5. Nút "Để sau" trong modal → đóng modal
+    if (updateCloseBtn) {
+        updateCloseBtn.addEventListener('click', () => {
+            if (updateModal) updateModal.classList.add('hidden');
+        });
+    }
+
+    // 6. Click ngoài modal content → đóng modal
+    if (updateModal) {
+        updateModal.addEventListener('click', (e) => {
+            if (e.target === updateModal) {
+                updateModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // 7. Auto-check update sau 3 giây (để UI load xong trước)
+    setTimeout(performUpdateCheck, 3000);
+}
+
 // ── Banner Image Manager ──────────────────────────────────────────────────────
 const BANNER_STORAGE_KEY = "custom_hero_banner";
 const DEFAULT_BANNER_SRC = "assets/defbanner.png";
@@ -365,6 +492,7 @@ async function saveDbGamePath() {
 
 document.addEventListener('DOMContentLoaded', () => {
     initBannerManager();
+    initUpdateChecker();
 
     const heroImage = document.getElementById('hero-image');
     const heroContainer = document.getElementById('hero-container');
