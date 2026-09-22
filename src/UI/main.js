@@ -74,12 +74,12 @@ function startPython() {
     if (!isPackaged) {
         // Dev Mode: Dùng pyw (Python windowed) - KHÔNG hiện cửa sổ console đen
         // pyw.exe đi kèm với mọi bản cài Python 3.x trên Windows
-        pyPath = process.platform === 'win32' ? 'pyw' : 'python3';
+        pyPath = 'pyw';
         args = [path.join(__dirname, '..', 'macro', 'main.py')];
         logE(`[Dev Mode] Đang chạy file Python trực tiếp: ${args[0]}`);
     } else {
         // Packaged Mode (đã đóng gói): Chạy Cryss.exe từ thư mục resources
-        const backendName = process.platform === 'win32' ? 'Cryss.exe' : 'Cryss';
+        const backendName = 'Cryss.exe';
         pyPath = path.join(process.resourcesPath, backendName);
         logE(`[Packaged Mode] Đang chạy backend từ resources: ${pyPath}`);
     }
@@ -142,10 +142,8 @@ function stopPython() {
         if (pyProc) {
             try {
                 // Kill cả process tree (cho trường hợp admin re-launch tạo child)
-                if (process.platform === 'win32') {
-                    const { execSync } = require('child_process');
-                    try { execSync(`taskkill /F /T /PID ${pyProc.pid}`, { stdio: 'ignore' }); } catch {}
-                }
+                const { execSync } = require('child_process');
+                try { execSync(`taskkill /F /T /PID ${pyProc.pid}`, { stdio: 'ignore' }); } catch {}
                 pyProc.kill();
             } catch {}
             pyProc = null;
@@ -292,9 +290,7 @@ app.whenReady().then(async () => {
 app.on('window-all-closed', async () => {
     logE('window-all-closed → dọn dẹp...');
     await stopPython();
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
+    app.quit();
 });
 
 // Đảm bảo kill Python khi Electron bị force quit

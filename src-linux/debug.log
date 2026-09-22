@@ -1,0 +1,265 @@
+[2026-09-22 21:56:24] apply_all_bindings called with: {'C0:  Combo Skirk C0 EQA 120fps': 'mouse_3'}
+[2026-09-22 21:56:24] Bound: 274 (mouse_3 (middle)) -> skkC0_EQA_120f
+[2026-09-22 21:56:24] Bound custom: 276 (mouse_5 (extra)) -> Skirk c0 180f
+[2026-09-22 21:56:26] Virtual Mouse created: CUTTOOL-Virtual-Mouse
+[2026-09-22 21:56:28] Virtual Keyboard created: CUTTOOL-Virtual-Keyboard
+[2026-09-22 21:56:28] EvdevListener started
+[2026-09-22 21:56:28] Evdev listeners started
+[2026-09-22 21:56:28] CLI started: FPS=180, bindings=2
+[2026-09-22 21:56:28] EvdevListener: total 0 devices attached
+[2026-09-22 21:57:31] apply_all_bindings called with: {}
+[2026-09-22 21:57:31] Bound custom: 276 (mouse_5 (extra)) -> Skirk c0 180f
+[2026-09-22 21:57:37] apply_all_bindings called with: {}
+[2026-09-22 21:57:49] apply_all_bindings called with: {'C0:  Combo Skirk C0 EQA 120fps': 'z'}
+[2026-09-22 21:57:49] Bound: 44 (z) -> skkC0_EQA_120f
+[2026-09-22 21:58:14] apply_all_bindings called with: {'C0:  Combo Skirk C0 EQA 120fps': 'v'}
+[2026-09-22 21:58:14] Bound: 47 (v) -> skkC0_EQA_120f
+[2026-09-22 22:00:22] EvdevListener stopped
+[2026-09-22 22:00:22] Evdev listeners stopped
+[2026-09-22 22:00:22] Evdev listeners stopped
+[2026-09-22 22:02:43] apply_all_bindings called with: {'C0:  Combo Skirk C0 EQA 120fps': 'v'}
+[2026-09-22 22:02:43] Bound: 47 (v) -> skkC0_EQA_120f
+[2026-09-22 22:02:43] Virtual Mouse created: CUTTOOL-Virtual-Mouse
+[2026-09-22 22:02:43] Virtual Keyboard created: CUTTOOL-Virtual-Keyboard
+[2026-09-22 22:02:43] EvdevListener started
+[2026-09-22 22:02:43] Evdev listeners started
+[2026-09-22 22:02:43] CLI started: FPS=180, bindings=1
+[2026-09-22 22:02:43] EvdevListener: listening to PIXA3848:00 093A:3848 Touchpad (/dev/input/event18)
+[2026-09-22 22:02:43] EvdevListener: listening to PIXA3848:00 093A:3848 Mouse (/dev/input/event17)
+[2026-09-22 22:02:43] EvdevListener: listening to Acer Wireless Radio Control (/dev/input/event15)
+[2026-09-22 22:02:43] EvdevListener: listening to Acer WMI hotkeys (/dev/input/event14)
+[2026-09-22 22:02:43] EvdevListener: listening to Video Bus (/dev/input/event13)
+[2026-09-22 22:02:43] EvdevListener: listening to SONiX EM908X Keyboard (/dev/input/event11)
+[2026-09-22 22:02:43] EvdevListener: listening to SONiX EM908X (/dev/input/event10)
+[2026-09-22 22:02:43] EvdevListener: listening to SONIX M87 keyboard Mouse (/dev/input/event8)
+[2026-09-22 22:02:43] EvdevListener: listening to SONIX M87 keyboard Keyboard (/dev/input/event7)
+[2026-09-22 22:02:43] EvdevListener: listening to SONIX M87 keyboard System Control (/dev/input/event6)
+[2026-09-22 22:02:43] EvdevListener: listening to SONIX M87 keyboard Consumer Control (/dev/input/event5)
+[2026-09-22 22:02:43] EvdevListener: listening to SONIX M87 keyboard (/dev/input/event4)
+[2026-09-22 22:02:43] EvdevListener: listening to AT Translated Set 2 keyboard (/dev/input/event3)
+[2026-09-22 22:02:43] EvdevListener: listening to Power Button (/dev/input/event2)
+[2026-09-22 22:02:43] EvdevListener: listening to Power Button (/dev/input/event0)
+[2026-09-22 22:02:43] EvdevListener: total 15 devices attached
+[2026-09-22 22:03:01] Trigger worker for target: 47 (v)
+[2026-09-22 22:03:01] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:03:08] Worker thread stopped for key: 47
+[2026-09-22 22:03:22] Trigger worker for target: 47 (v)
+[2026-09-22 22:03:22] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:03:35] Worker thread stopped for key: 47
+[2026-09-22 22:03:49] Trigger worker for target: 47 (v)
+[2026-09-22 22:03:49] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:04:02] Worker thread stopped for key: 47
+[2026-09-22 22:04:23] Trigger worker for target: 47 (v)
+[2026-09-22 22:04:23] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:04:23] Trigger worker for target: 47 (v)
+[2026-09-22 22:04:23] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:04:34] Worker thread stopped for key: 47
+[2026-09-22 22:04:35] Worker thread stopped for key: 47
+[2026-09-22 22:04:51] Trigger worker for target: 47 (v)
+[2026-09-22 22:04:51] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:05:05] Worker thread stopped for key: 47
+[2026-09-22 22:06:01] Trigger worker for target: 47 (v)
+[2026-09-22 22:06:01] Worker thread started for: v -> skkC0_EQA_120f
+[2026-09-22 22:06:15] Worker thread stopped for key: 47
+[2026-09-22 22:06:54] apply_all_bindings called with: {'C0:  Combo Skirk C0 EQA 120fps': 'mouse_4'}
+[2026-09-22 22:06:54] Bound: 275 (mouse_4 (side)) -> skkC0_EQA_120f
+[2026-09-22 22:07:02] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:07:02] Worker thread started for: mouse_4 (side) -> skkC0_EQA_120f
+[2026-09-22 22:07:16] Worker thread stopped for key: 275
+[2026-09-22 22:13:18] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:13:18] Worker thread started for: mouse_4 (side) -> skkC0_EQA_120f
+[2026-09-22 22:13:31] Worker thread stopped for key: 275
+[2026-09-22 22:15:53] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:15:53] Worker thread started for: mouse_4 (side) -> skkC0_EQA_120f
+[2026-09-22 22:16:06] Worker thread stopped for key: 275
+[2026-09-22 22:16:25] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:16:25] Worker thread started for: mouse_4 (side) -> skkC0_EQA_120f
+[2026-09-22 22:16:38] Worker thread stopped for key: 275
+[2026-09-22 22:17:04] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:17:04] Worker thread started for: mouse_4 (side) -> skkC0_EQA_120f
+[2026-09-22 22:17:17] Worker thread stopped for key: 275
+[2026-09-22 22:25:00] apply_all_bindings called with: {}
+[2026-09-22 22:26:50] apply_all_bindings called with: {}
+[2026-09-22 22:26:50] Bound custom: 275 (mouse_4 (side)) -> Skirk nhieu dien
+[2026-09-22 22:30:07] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:30:07] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:30:21] Worker thread stopped for key: 275
+[2026-09-22 22:30:41] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:30:41] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:30:55] Worker thread stopped for key: 275
+[2026-09-22 22:31:17] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:31:17] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:31:31] Worker thread stopped for key: 275
+[2026-09-22 22:34:19] apply_all_bindings called with: {}
+[2026-09-22 22:34:19] Bound custom: 275 (mouse_4 (side)) -> Skirk nhieu dien
+[2026-09-22 22:35:11] apply_all_bindings called with: {}
+[2026-09-22 22:35:11] Bound custom: 275 (mouse_4 (side)) -> Skirk nhieu dien
+[2026-09-22 22:36:35] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:36:35] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:36:49] Worker thread stopped for key: 275
+[2026-09-22 22:37:17] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:37:17] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:37:33] Worker thread stopped for key: 275
+[2026-09-22 22:37:42] EvdevListener stopped
+[2026-09-22 22:37:43] Evdev listeners stopped
+[2026-09-22 22:37:43] Evdev listeners stopped
+[2026-09-22 22:37:46] apply_all_bindings called with: {}
+[2026-09-22 22:37:46] Bound custom: 275 (mouse_4 (side)) -> Skirk nhieu dien
+[2026-09-22 22:37:46] Virtual Mouse created: CUTTOOL-Virtual-Mouse
+[2026-09-22 22:37:46] Virtual Keyboard created: CUTTOOL-Virtual-Keyboard
+[2026-09-22 22:37:46] EvdevListener started
+[2026-09-22 22:37:46] Evdev listeners started
+[2026-09-22 22:37:46] CLI started: FPS=170, bindings=1
+[2026-09-22 22:37:47] EvdevListener: listening to PIXA3848:00 093A:3848 Touchpad (/dev/input/event18)
+[2026-09-22 22:37:47] EvdevListener: listening to PIXA3848:00 093A:3848 Mouse (/dev/input/event17)
+[2026-09-22 22:37:47] EvdevListener: listening to Acer Wireless Radio Control (/dev/input/event15)
+[2026-09-22 22:37:47] EvdevListener: listening to Acer WMI hotkeys (/dev/input/event14)
+[2026-09-22 22:37:47] EvdevListener: listening to Video Bus (/dev/input/event13)
+[2026-09-22 22:37:47] EvdevListener: listening to SONiX EM908X Keyboard (/dev/input/event11)
+[2026-09-22 22:37:47] EvdevListener: listening to SONiX EM908X (/dev/input/event10)
+[2026-09-22 22:37:47] EvdevListener: listening to SONIX M87 keyboard Mouse (/dev/input/event8)
+[2026-09-22 22:37:47] EvdevListener: listening to SONIX M87 keyboard Keyboard (/dev/input/event7)
+[2026-09-22 22:37:47] EvdevListener: listening to SONIX M87 keyboard System Control (/dev/input/event6)
+[2026-09-22 22:37:47] EvdevListener: listening to SONIX M87 keyboard Consumer Control (/dev/input/event5)
+[2026-09-22 22:37:47] EvdevListener: listening to SONIX M87 keyboard (/dev/input/event4)
+[2026-09-22 22:37:47] EvdevListener: listening to AT Translated Set 2 keyboard (/dev/input/event3)
+[2026-09-22 22:37:47] EvdevListener: listening to Power Button (/dev/input/event2)
+[2026-09-22 22:37:47] EvdevListener: listening to Power Button (/dev/input/event0)
+[2026-09-22 22:37:47] EvdevListener: total 15 devices attached
+[2026-09-22 22:38:07] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:38:07] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:38:21] Worker thread stopped for key: 275
+[2026-09-22 22:38:48] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:38:48] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:39:01] Worker thread stopped for key: 275
+[2026-09-22 22:39:21] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:39:21] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:39:35] Worker thread stopped for key: 275
+[2026-09-22 22:40:55] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:40:55] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:41:11] Worker thread stopped for key: 275
+[2026-09-22 22:41:32] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:41:32] Worker thread started for: mouse_4 (side) -> Skirk nhieu dien
+[2026-09-22 22:41:46] Worker thread stopped for key: 275
+[2026-09-22 22:47:33] load_config error: Illegal trailing comma before end of array: line 39 column 16 (char 871)
+[2026-09-22 22:47:33] apply_all_bindings called with: {}
+[2026-09-22 22:47:33] Virtual Mouse created: CUTTOOL-Virtual-Mouse
+[2026-09-22 22:47:33] Virtual Keyboard created: CUTTOOL-Virtual-Keyboard
+[2026-09-22 22:47:33] EvdevListener started
+[2026-09-22 22:47:33] Evdev listeners started
+[2026-09-22 22:47:33] CLI started: FPS=120, bindings=0
+[2026-09-22 22:47:33] load_config error: Illegal trailing comma before end of array: line 39 column 16 (char 871)
+[2026-09-22 22:47:33] EvdevListener: listening to PIXA3848:00 093A:3848 Touchpad (/dev/input/event18)
+[2026-09-22 22:47:33] EvdevListener: listening to PIXA3848:00 093A:3848 Mouse (/dev/input/event17)
+[2026-09-22 22:47:33] EvdevListener: listening to Acer Wireless Radio Control (/dev/input/event15)
+[2026-09-22 22:47:33] EvdevListener: listening to Acer WMI hotkeys (/dev/input/event14)
+[2026-09-22 22:47:33] EvdevListener: listening to Video Bus (/dev/input/event13)
+[2026-09-22 22:47:33] EvdevListener: listening to SONiX EM908X Keyboard (/dev/input/event11)
+[2026-09-22 22:47:33] EvdevListener: listening to SONiX EM908X (/dev/input/event10)
+[2026-09-22 22:47:33] EvdevListener: listening to SONIX M87 keyboard Mouse (/dev/input/event8)
+[2026-09-22 22:47:33] EvdevListener: listening to SONIX M87 keyboard Keyboard (/dev/input/event7)
+[2026-09-22 22:47:33] EvdevListener: listening to SONIX M87 keyboard System Control (/dev/input/event6)
+[2026-09-22 22:47:33] EvdevListener: listening to SONIX M87 keyboard Consumer Control (/dev/input/event5)
+[2026-09-22 22:47:33] EvdevListener: listening to SONIX M87 keyboard (/dev/input/event4)
+[2026-09-22 22:47:33] EvdevListener: listening to AT Translated Set 2 keyboard (/dev/input/event3)
+[2026-09-22 22:47:33] EvdevListener: listening to Power Button (/dev/input/event2)
+[2026-09-22 22:47:33] EvdevListener: listening to Power Button (/dev/input/event0)
+[2026-09-22 22:47:33] EvdevListener: total 15 devices attached
+[2026-09-22 22:50:41] apply_all_bindings called with: {}
+[2026-09-22 22:50:41] Bound custom: 275 (mouse_4 (side)) -> Skirk 170
+[2026-09-22 22:50:56] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:50:56] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:51:10] Worker thread stopped for key: 275
+[2026-09-22 22:51:28] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:51:28] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:51:42] Worker thread stopped for key: 275
+[2026-09-22 22:51:49] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:51:49] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:52:03] Worker thread stopped for key: 275
+[2026-09-22 22:52:54] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:52:54] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:53:07] Worker thread stopped for key: 275
+[2026-09-22 22:53:46] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:53:46] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:54:00] Worker thread stopped for key: 275
+[2026-09-22 22:54:27] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:54:27] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:54:41] Worker thread stopped for key: 275
+[2026-09-22 22:55:03] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:55:03] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:55:17] Worker thread stopped for key: 275
+[2026-09-22 22:56:20] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:56:20] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:56:34] Worker thread stopped for key: 275
+[2026-09-22 22:56:52] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:56:52] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:57:06] Worker thread stopped for key: 275
+[2026-09-22 22:57:26] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:57:26] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:57:39] Worker thread stopped for key: 275
+[2026-09-22 22:58:02] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:58:02] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:58:15] Worker thread stopped for key: 275
+[2026-09-22 22:58:35] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:58:35] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:58:49] Worker thread stopped for key: 275
+[2026-09-22 22:59:06] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:59:06] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:59:20] Worker thread stopped for key: 275
+[2026-09-22 22:59:40] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 22:59:40] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 22:59:53] Worker thread stopped for key: 275
+[2026-09-22 23:00:02] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:00:02] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:00:15] Worker thread stopped for key: 275
+[2026-09-22 23:00:52] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:00:52] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:01:06] Worker thread stopped for key: 275
+[2026-09-22 23:01:14] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:01:14] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:01:27] Worker thread stopped for key: 275
+[2026-09-22 23:01:45] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:01:45] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:01:59] Worker thread stopped for key: 275
+[2026-09-22 23:02:06] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:02:06] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:02:20] Worker thread stopped for key: 275
+[2026-09-22 23:02:28] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:02:28] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:02:41] Worker thread stopped for key: 275
+[2026-09-22 23:02:49] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:02:49] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:03:02] Worker thread stopped for key: 275
+[2026-09-22 23:03:20] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:03:20] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:03:33] Worker thread stopped for key: 275
+[2026-09-22 23:03:42] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:03:42] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:03:55] Worker thread stopped for key: 275
+[2026-09-22 23:05:52] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:05:52] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:06:05] Worker thread stopped for key: 275
+[2026-09-22 23:06:15] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:06:15] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:06:29] Worker thread stopped for key: 275
+[2026-09-22 23:06:51] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:06:51] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:07:04] Worker thread stopped for key: 275
+[2026-09-22 23:07:12] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:07:12] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:07:26] Worker thread stopped for key: 275
+[2026-09-22 23:07:43] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:07:43] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:07:56] Worker thread stopped for key: 275
+[2026-09-22 23:08:04] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:08:04] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:08:18] Worker thread stopped for key: 275
+[2026-09-22 23:08:39] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:08:39] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:08:53] Worker thread stopped for key: 275
+[2026-09-22 23:09:01] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:09:01] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:09:14] Worker thread stopped for key: 275
+[2026-09-22 23:11:38] Trigger worker for target: 275 (mouse_4 (side))
+[2026-09-22 23:11:38] Worker thread started for: mouse_4 (side) -> Skirk 170
+[2026-09-22 23:11:39] Worker thread stopped for key: 275

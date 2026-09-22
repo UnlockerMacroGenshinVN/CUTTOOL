@@ -247,8 +247,6 @@ function launchGame(gamePath, app) {
     }
 
     // Chạy Launcher_2.exe với đường dẫn game
-    const { spawn } = require("child_process");
-
     const psCommand =
         `Start-Process -FilePath "${launcherExe}" ` +
         `-ArgumentList '"${targetPath}"' ` +
