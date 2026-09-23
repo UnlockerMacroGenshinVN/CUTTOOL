@@ -136,7 +136,7 @@
         <!-- Banner Title & Controls -->
         <div id="bannerTitleContainer" class="absolute top-1/2 left-8 -translate-y-1/2 z-20 flex flex-col items-start gap-3 transition-all duration-500 pointer-events-none">
           <h2 id="bannerAppName" class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tight transition-all duration-500">CutTool</h2>
-          <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-500">v1.1</p>
+          <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-500">v1.1.1</p>
         </div>
         <div class="absolute top-4 right-6 z-20 flex items-center gap-2">
           <!-- Check for Update Bell Button -->
@@ -285,25 +285,31 @@
           <!-- Row 2: Unlocker & Game Config -->
           <div class="w-full boxes-clearfix mt-6">
             <div
-              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col"
+              class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-all duration-200"
               style="margin-right: 32px"
             >
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-teal flex items-center gap-2">
-                  <span class="material-symbols-outlined text-teal">speed</span>
-                  Mở khóa FPS
-                </h3>
-                <label class="relative inline-flex items-center cursor-pointer shrink-0 select-none">
-                  <input type="checkbox" id="db_FpsUnlock" class="sr-only peer">
-                  <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
-                </label>
-              </div>
-              <div class="mb-4">
-                <label class="block text-sm font-medium text-on-surface-variant mb-1.5">FPS mục tiêu</label>
-                <input type="number" id="db_TargetFps" min="30" max="1000" class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold" />
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined">speed</span>
+                    </div>
+                    <h3 class="text-base font-bold text-on-background">
+                      Mở khóa FPS
+                    </h3>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer shrink-0 select-none">
+                    <input type="checkbox" id="db_FpsUnlock" class="sr-only peer">
+                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+                  </label>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-on-surface-variant mb-1.5">FPS mục tiêu</label>
+                  <input type="number" id="db_TargetFps" min="30" max="1000" class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold" />
+                </div>
               </div>
               <div class="mt-auto">
-                <button type="button" id="db_saveUnlockerBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-4 py-2 text-sm font-semibold transition-colors active:scale-95 w-full flex items-center justify-center gap-2">
+                <button type="button" id="db_saveUnlockerBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors active:scale-95 w-full flex items-center justify-center gap-2 cursor-pointer">
                   <span class="material-symbols-outlined text-base">save</span> Lưu Unlocker
                 </button>
                 <p id="db_unlockerSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
@@ -311,24 +317,58 @@
             </div>
 
             <div
-              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col"
+              class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-all duration-200"
             >
-              <h3 class="text-lg font-semibold text-teal mb-4 flex items-center gap-2">
-                <span class="material-symbols-outlined text-teal">sports_esports</span>
-                Đường dẫn Game
-              </h3>
-              <div class="flex flex-col gap-3">
-                <input type="text" id="db_GamePath" placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe" class="w-full bg-surface-container-high border border-outline/40 rounded-xl px-3 py-2 text-on-surface text-sm focus:border-teal focus:outline-none transition-colors" />
-                
+              <div>
+                <div class="flex items-center justify-between gap-3 mb-4">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined">sports_esports</span>
+                    </div>
+                    <div class="min-w-0">
+                      <h3 class="font-bold text-on-background text-base truncate">
+                        Đường dẫn file Game (GenshinImpact.exe)
+                      </h3>
+                    </div>
+                  </div>
+                  <span id="gamePathStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    File sẵn sàng
+                  </span>
+                </div>
+
+                <div class="relative w-full mt-2">
+                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">folder_open</span>
+                  <input
+                    type="text"
+                    id="db_GamePath"
+                    placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe"
+                    class="w-full bg-surface-container-high border border-outline/40 rounded-xl pl-10 pr-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/40 text-sm focus:border-teal focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div class="mt-auto">
+                <input type="file" id="db_GamePathInput" accept=".exe" class="hidden" />
                 <div class="flex gap-2">
-                  <input type="file" id="db_GamePathInput" accept=".exe" class="hidden" />
-                  <button type="button" id="db_browseGameBtn" class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant border border-outline/40 rounded-xl px-3 py-2 text-sm font-semibold transition-colors flex items-center justify-center gap-1.5 flex-1">
-                    <span class="material-symbols-outlined text-base">folder_open</span> Duyệt file
+                  <button
+                    type="button"
+                    id="db_browseGameBtn"
+                    class="px-4 py-2.5 rounded-xl border border-teal/40 bg-teal/10 hover:bg-teal/20 text-teal text-sm font-semibold transition-all flex items-center justify-center gap-2 flex-1 cursor-pointer active:scale-[0.98]"
+                  >
+                    <span class="material-symbols-outlined text-lg">file_open</span>
+                    <span>Duyệt file...</span>
                   </button>
-                  <button type="button" id="db_saveGamePathBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-3 py-2 text-sm font-semibold transition-colors active:scale-95 flex-1">
-                    Lưu đường dẫn
+                  <button
+                    type="button"
+                    id="db_saveGamePathBtn"
+                    class="px-4 py-2.5 rounded-xl bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 text-sm font-semibold transition-colors active:scale-95 flex items-center justify-center gap-2 flex-1 cursor-pointer"
+                  >
+                    <span class="material-symbols-outlined text-base">save</span>
+                    <span>Lưu đường dẫn</span>
                   </button>
                 </div>
+                <p id="db_gamePathSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
               </div>
             </div>
           </div>
