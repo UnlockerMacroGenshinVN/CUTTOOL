@@ -168,7 +168,25 @@
           </label>
         </div>
 
-        <!-- 2. FpsUnlock -->
+        <!-- 2. ShowFPS -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
+          <div class="flex gap-4">
+            <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <span class="material-symbols-outlined">speed</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                Hiển thị FPS (Show FPS)
+              </h3>
+            </div>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+            <input type="checkbox" id="cfg_ShowFPS" class="sr-only peer">
+            <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+          </label>
+        </div>
+
+        <!-- 3. FpsUnlock -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -186,8 +204,8 @@
           </label>
         </div>
 
-        <!-- 3. TargetFps -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1 flex flex-col justify-center">
+        <!-- 4. TargetFps -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group flex flex-col justify-center">
           <div class="flex items-center justify-between gap-4 mb-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -221,7 +239,7 @@
           </div>
         </div>
 
-        <!-- 4. FovUnlock -->
+        <!-- 5. FovUnlock -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -239,8 +257,8 @@
           </label>
         </div>
 
-        <!-- 5. FovValue -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group col-span-1 md:col-span-2 lg:col-span-1 flex flex-col justify-center">
+        <!-- 6. FovValue -->
+        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 group flex flex-col justify-center">
           <div class="flex items-center justify-between gap-4 mb-3">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -274,7 +292,7 @@
           </div>
         </div>
 
-        <!-- 6. RemoveTeamAnim -->
+        <!-- 7. RemoveTeamAnim -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -292,7 +310,7 @@
           </label>
         </div>
 
-        <!-- 7. DisableCameraMove -->
+        <!-- 8. DisableCameraMove -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -310,7 +328,7 @@
           </label>
         </div>
 
-        <!-- 8. DisableFog -->
+        <!-- 9. DisableFog -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -328,25 +346,7 @@
           </label>
         </div>
 
-        <!-- 10. ShowFPS -->
-        <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
-          <div class="flex gap-4">
-            <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <span class="material-symbols-outlined">speed</span>
-            </div>
-            <div>
-              <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
-                Hiển thị FPS (Show FPS)
-              </h3>
-            </div>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
-            <input type="checkbox" id="cfg_ShowFPS" class="sr-only peer">
-            <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
-          </label>
-        </div>
-
-        <!-- 11. HideUID -->
+        <!-- 10. HideUID -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -364,7 +364,7 @@
           </label>
         </div>
 
-        <!-- 12. EnableNetworkToggle -->
+        <!-- 11. EnableNetworkToggle -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4">
             <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -383,7 +383,7 @@
           </label>
         </div>
 
-        <!-- 13. NetworkToggleKey -->
+        <!-- 12. NetworkToggleKey -->
         <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-all duration-200 flex items-center justify-between gap-4 group">
           <div class="flex gap-4 items-center">
             <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
