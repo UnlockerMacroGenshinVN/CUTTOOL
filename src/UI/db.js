@@ -154,23 +154,36 @@ async function checkMacroStatus() {
     }
 }
 
-// ── Update Checker ────────────────────────────────────────────────────────────
-let _updateInfo = null; // Lưu trữ thông tin update để dùng khi click bell
+// ── Update Checker & Auto-Updater ───────────────────────────────────────────
+let _updateInfo = null;       // Lưu trữ thông tin release
+let _updateUIState = 'IDLE';  // IDLE | AVAILABLE | DOWNLOADING | VERIFYING | STAGING | READY_TO_RESTART | ERROR
 
 /**
- * Khởi tạo hệ thống kiểm tra cập nhật
+ * Khởi tạo hệ thống Auto-Update hoàn chỉnh:
  * - Đọc version từ main process (version.json) để hiển thị trên banner
  * - Auto-check update 1 lần sau khi trang load (delay 3s)
- * - Click bell: hiện modal nếu có update, hiện toast nếu không
+ * - Tải bản cập nhật tự động có thanh tiến trình và thông số chi tiết
+ * - Giải nén và staging an toàn
+ * - Khởi động lại và áp dụng bản cập nhật một chạm
  */
 async function initUpdateChecker() {
     const bellIcon = document.getElementById('updateBellIcon');
     const badgeDot = document.getElementById('updateBadgeDot');
     const checkUpdateBtn = document.getElementById('checkUpdateBtn');
     const updateModal = document.getElementById('updateModal');
+    const updateModalIcon = document.getElementById('updateModalIcon');
+    const updateModalTitle = document.getElementById('updateModalTitle');
     const updateVersionInfo = document.getElementById('updateVersionInfo');
     const updateReleaseNotes = document.getElementById('updateReleaseNotes');
+    const updateProgressSection = document.getElementById('updateProgressSection');
+    const updateStatusText = document.getElementById('updateStatusText');
+    const updateProgressPercent = document.getElementById('updateProgressPercent');
+    const updateProgressBar = document.getElementById('updateProgressBar');
+    const updateProgressDetail = document.getElementById('updateProgressDetail');
+    const updateProgressSpeed = document.getElementById('updateProgressSpeed');
     const updateDownloadBtn = document.getElementById('updateDownloadBtn');
+    const updateDownloadIcon = document.getElementById('updateDownloadIcon');
+    const updateDownloadText = document.getElementById('updateDownloadText');
     const updateCloseBtn = document.getElementById('updateCloseBtn');
     const bannerAppVersion = document.getElementById('bannerAppVersion');
 
@@ -186,7 +199,148 @@ async function initUpdateChecker() {
         }
     }
 
-    // 2. Hàm thực hiện kiểm tra update
+    // 2. Hàm cập nhật trạng thái giao diện modal
+    function setModalUIState(state, data = {}) {
+        _updateUIState = state;
+
+        if (state === 'AVAILABLE') {
+            if (updateProgressSection) updateProgressSection.classList.add('hidden');
+            if (updateDownloadBtn) {
+                updateDownloadBtn.disabled = false;
+                updateDownloadBtn.className = 'flex-1 bg-teal hover:bg-teal/80 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-md';
+            }
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'download';
+                updateDownloadIcon.classList.remove('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Tải và Cập nhật';
+            if (updateCloseBtn) updateCloseBtn.textContent = 'Để sau';
+            if (updateModalIcon) {
+                updateModalIcon.textContent = 'notification_important';
+                updateModalIcon.className = 'material-symbols-outlined text-3xl text-amber-400';
+            }
+            if (updateModalTitle) updateModalTitle.textContent = 'Có bản cập nhật mới!';
+        } else if (state === 'DOWNLOADING') {
+            if (updateProgressSection) updateProgressSection.classList.remove('hidden');
+            if (updateStatusText) {
+                updateStatusText.textContent = 'Đang tải bản cập nhật...';
+                updateStatusText.className = 'text-on-surface font-medium';
+            }
+            if (updateDownloadBtn) {
+                updateDownloadBtn.disabled = true;
+                updateDownloadBtn.className = 'flex-1 bg-surface-container-highest text-on-surface-variant font-medium rounded-lg px-4 py-2.5 text-sm flex items-center justify-center gap-2 cursor-not-allowed opacity-80';
+            }
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'hourglass_top';
+                updateDownloadIcon.classList.remove('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Đang tải về...';
+            if (updateCloseBtn) updateCloseBtn.textContent = 'Ẩn xuống nền';
+        } else if (state === 'VERIFYING') {
+            if (updateProgressSection) updateProgressSection.classList.remove('hidden');
+            if (updateStatusText) {
+                updateStatusText.textContent = 'Đang xác thực file cập nhật...';
+                updateStatusText.className = 'text-amber-400 font-medium';
+            }
+            if (updateDownloadBtn) updateDownloadBtn.disabled = true;
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'sync';
+                updateDownloadIcon.classList.add('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Đang kiểm tra...';
+        } else if (state === 'STAGING') {
+            if (updateProgressSection) updateProgressSection.classList.remove('hidden');
+            if (updateStatusText) {
+                updateStatusText.textContent = 'Đang giải nén và chuẩn bị cập nhật...';
+                updateStatusText.className = 'text-teal font-medium';
+            }
+            if (updateDownloadBtn) updateDownloadBtn.disabled = true;
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'sync';
+                updateDownloadIcon.classList.add('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Đang chuẩn bị...';
+        } else if (state === 'READY_TO_RESTART') {
+            if (updateProgressSection) updateProgressSection.classList.remove('hidden');
+            if (updateStatusText) {
+                updateStatusText.textContent = '✓ Bản cập nhật đã sẵn sàng!';
+                updateStatusText.className = 'text-emerald-400 font-semibold';
+            }
+            if (updateProgressPercent) updateProgressPercent.textContent = '100%';
+            if (updateProgressBar) {
+                updateProgressBar.style.width = '100%';
+                updateProgressBar.className = 'bg-emerald-400 h-2.5 rounded-full transition-all duration-200';
+            }
+            if (updateProgressDetail) updateProgressDetail.textContent = 'Đã sẵn sàng cài đặt';
+            if (updateProgressSpeed) updateProgressSpeed.textContent = '';
+
+            if (updateModalIcon) {
+                updateModalIcon.textContent = 'published_with_changes';
+                updateModalIcon.className = 'material-symbols-outlined text-3xl text-emerald-400';
+            }
+            if (updateModalTitle) updateModalTitle.textContent = 'Cập nhật sẵn sàng!';
+
+            if (updateDownloadBtn) {
+                updateDownloadBtn.disabled = false;
+                updateDownloadBtn.className = 'flex-1 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-lg animate-pulse';
+            }
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'restart_alt';
+                updateDownloadIcon.classList.remove('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Khởi động lại để cập nhật';
+            if (updateCloseBtn) updateCloseBtn.textContent = 'Khởi động lại sau';
+
+            // Cập nhật chuông thông báo sang xanh sẵn sàng
+            if (checkUpdateBtn) {
+                checkUpdateBtn.classList.remove('text-amber-400');
+                checkUpdateBtn.classList.add('text-emerald-400');
+                checkUpdateBtn.title = `Bản cập nhật v${_updateInfo?.latestVersion || ''} đã tải xong! Nhấn để khởi động lại.`;
+            }
+            if (bellIcon) bellIcon.textContent = 'published_with_changes';
+            if (badgeDot) {
+                badgeDot.classList.remove('hidden');
+                badgeDot.classList.remove('bg-red-500');
+                badgeDot.classList.add('bg-emerald-400');
+            }
+        } else if (state === 'ERROR') {
+            if (updateProgressSection) updateProgressSection.classList.remove('hidden');
+            if (updateStatusText) {
+                updateStatusText.textContent = data.error ? `Lỗi: ${data.error}` : 'Quá trình cập nhật thất bại.';
+                updateStatusText.className = 'text-red-400 font-medium';
+            }
+            if (updateDownloadBtn) {
+                updateDownloadBtn.disabled = false;
+                updateDownloadBtn.className = 'flex-1 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-md';
+            }
+            if (updateDownloadIcon) {
+                updateDownloadIcon.textContent = 'refresh';
+                updateDownloadIcon.classList.remove('animate-spin');
+            }
+            if (updateDownloadText) updateDownloadText.textContent = 'Thử lại';
+            if (updateCloseBtn) updateCloseBtn.textContent = 'Đóng';
+        }
+    }
+
+    // 3. Đăng ký lắng nghe sự kiện tiến trình từ Main process
+    if (window.unlockerNative && typeof window.unlockerNative.onUpdateProgress === 'function') {
+        window.unlockerNative.onUpdateProgress((stats) => {
+            if (_updateUIState === 'DOWNLOADING') {
+                if (updateProgressBar) updateProgressBar.style.width = `${stats.percent}%`;
+                if (updateProgressPercent) updateProgressPercent.textContent = `${stats.percent}%`;
+                if (updateProgressDetail) updateProgressDetail.textContent = `${stats.transferredFormatted} / ${stats.totalFormatted}`;
+                if (updateProgressSpeed) updateProgressSpeed.textContent = stats.speedFormatted;
+            }
+        });
+    }
+
+    if (window.unlockerNative && typeof window.unlockerNative.onUpdateStatus === 'function') {
+        window.unlockerNative.onUpdateStatus((data) => {
+            setModalUIState(data.status, data);
+        });
+    }
+
+    // 4. Hàm thực hiện kiểm tra update
     async function performUpdateCheck() {
         if (!window.unlockerNative || typeof window.unlockerNative.checkForUpdate !== 'function') {
             console.warn('Update checker API không khả dụng');
@@ -198,22 +352,29 @@ async function initUpdateChecker() {
             _updateInfo = result;
 
             if (result.hasUpdate) {
-                // Đổi icon chuông sang chuông có dấu chấm than
-                if (bellIcon) bellIcon.textContent = 'notification_important';
-                if (badgeDot) badgeDot.classList.remove('hidden');
-                if (checkUpdateBtn) {
-                    checkUpdateBtn.title = `Có bản cập nhật mới: v${result.latestVersion}`;
-                    checkUpdateBtn.classList.add('text-amber-400');
-                    checkUpdateBtn.classList.remove('text-on-surface-variant');
+                if (_updateUIState !== 'READY_TO_RESTART') {
+                    setModalUIState('AVAILABLE');
+                    if (bellIcon) bellIcon.textContent = 'notification_important';
+                    if (badgeDot) {
+                        badgeDot.classList.remove('hidden');
+                        badgeDot.classList.remove('bg-emerald-400');
+                        badgeDot.classList.add('bg-red-500');
+                    }
+                    if (checkUpdateBtn) {
+                        checkUpdateBtn.title = `Có bản cập nhật mới: v${result.latestVersion}`;
+                        checkUpdateBtn.classList.add('text-amber-400');
+                        checkUpdateBtn.classList.remove('text-on-surface-variant');
+                        checkUpdateBtn.classList.remove('text-emerald-400');
+                    }
                 }
                 console.log(`[Update] Có phiên bản mới: v${result.latestVersion} (hiện tại: v${result.currentVersion})`);
             } else {
-                // Giữ nguyên icon chuông bình thường
                 if (bellIcon) bellIcon.textContent = 'notifications';
                 if (badgeDot) badgeDot.classList.add('hidden');
                 if (checkUpdateBtn) {
                     checkUpdateBtn.title = 'Bạn đang sử dụng phiên bản mới nhất';
                     checkUpdateBtn.classList.remove('text-amber-400');
+                    checkUpdateBtn.classList.remove('text-emerald-400');
                 }
                 if (result.error) {
                     console.warn(`[Update] Lỗi kiểm tra: ${result.error}`);
@@ -226,7 +387,7 @@ async function initUpdateChecker() {
         }
     }
 
-    // 3. Click bell button
+    // 5. Click bell button
     if (checkUpdateBtn) {
         checkUpdateBtn.addEventListener('click', () => {
             if (_updateInfo && _updateInfo.hasUpdate) {
@@ -239,36 +400,57 @@ async function initUpdateChecker() {
                 }
                 if (updateModal) updateModal.classList.remove('hidden');
             } else {
-                // Hiện toast thông báo đã mới nhất
                 _notify('✓ Bạn đang sử dụng phiên bản mới nhất!');
-                // Gọi lại check để cập nhật (manual refresh)
                 performUpdateCheck();
             }
         });
     }
 
-    // 4. Nút "Tải về" trong modal → mở link GitHub release
+    // 6. Nút hành động trong modal ("Tải và Cập nhật" / "Khởi động lại để cập nhật")
     if (updateDownloadBtn) {
         updateDownloadBtn.addEventListener('click', async () => {
-            if (_updateInfo) {
-                // Ưu tiên mở trang release HTML, fallback sang download trực tiếp
-                const url = _updateInfo.htmlUrl || _updateInfo.downloadUrl;
-                if (url && window.unlockerNative && typeof window.unlockerNative.openExternalUrl === 'function') {
-                    await window.unlockerNative.openExternalUrl(url);
+            if (!_updateInfo) return;
+
+            // Nếu đã tải xong -> Bấm để Khởi động lại
+            if (_updateUIState === 'READY_TO_RESTART') {
+                try {
+                    updateDownloadBtn.disabled = true;
+                    if (updateDownloadText) updateDownloadText.textContent = 'Đang khởi động lại...';
+                    if (updateDownloadIcon) updateDownloadIcon.classList.add('animate-spin');
+
+                    if (window.unlockerNative && typeof window.unlockerNative.applyUpdateAndRestart === 'function') {
+                        await window.unlockerNative.applyUpdateAndRestart();
+                    }
+                } catch (err) {
+                    console.error('[Update] Lỗi khởi động lại:', err);
+                    setModalUIState('ERROR', { error: err.message });
+                }
+                return;
+            }
+
+            // Nếu đang ở AVAILABLE hoặc ERROR -> Bắt đầu tải bản cập nhật
+            if (_updateUIState === 'AVAILABLE' || _updateUIState === 'ERROR') {
+                try {
+                    setModalUIState('DOWNLOADING');
+                    if (window.unlockerNative && typeof window.unlockerNative.startUpdateDownload === 'function') {
+                        await window.unlockerNative.startUpdateDownload();
+                    }
+                } catch (err) {
+                    console.error('[Update] Lỗi tải bản cập nhật:', err);
+                    setModalUIState('ERROR', { error: err.message });
                 }
             }
-            if (updateModal) updateModal.classList.add('hidden');
         });
     }
 
-    // 5. Nút "Để sau" trong modal → đóng modal
+    // 7. Nút "Để sau" / "Ẩn xuống nền" trong modal → đóng modal
     if (updateCloseBtn) {
         updateCloseBtn.addEventListener('click', () => {
             if (updateModal) updateModal.classList.add('hidden');
         });
     }
 
-    // 6. Click ngoài modal content → đóng modal
+    // 8. Click ngoài modal content → đóng modal (vẫn tải ngầm trong nền nếu đang tải)
     if (updateModal) {
         updateModal.addEventListener('click', (e) => {
             if (e.target === updateModal) {
@@ -277,7 +459,7 @@ async function initUpdateChecker() {
         });
     }
 
-    // 7. Auto-check update sau 3 giây (để UI load xong trước)
+    // 9. Auto-check update sau 3 giây (để UI load xong trước)
     setTimeout(performUpdateCheck, 3000);
 }
 

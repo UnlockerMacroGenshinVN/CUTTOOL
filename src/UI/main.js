@@ -4,6 +4,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const updater = require('./updater');
 
 // ── Win10 / older GPU compatibility flags ─────────────────────────────────────
 // Ngăn crash renderer trên Win10 máy cũ với GPU driver không tương thích
@@ -216,126 +217,30 @@ ipcMain.handle('select-banner-image', async () => {
     return null;
 });
 
-// ── Version & Update Checker ─────────────────────────────────────────────────
-
-/**
- * Đọc version từ version.json (Single Source of Truth)
- * Hỗ trợ cả dev mode (đọc từ __dirname) và packaged mode (đọc từ resources)
- */
-function getAppVersion() {
-    try {
-        // Thử đọc từ thư mục hiện tại trước (dev mode)
-        let versionPath = path.join(__dirname, 'version.json');
-        if (!fs.existsSync(versionPath)) {
-            // Packaged mode: version.json nằm trong resources
-            versionPath = path.join(process.resourcesPath, 'version.json');
-        }
-        const data = JSON.parse(fs.readFileSync(versionPath, 'utf8'));
-        return data.version || '0.0.0';
-    } catch (e) {
-        logE(`Lỗi đọc version.json: ${e.message}`);
-        return '0.0.0';
-    }
-}
-
-/**
- * So sánh semver đơn giản: parse "v1.2.3" hoặc "1.2.3" thành mảng [1,2,3]
- * Trả về: 1 nếu a > b, -1 nếu a < b, 0 nếu bằng nhau
- */
-function compareSemver(a, b) {
-    const parse = (v) => v.replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
-    const pa = parse(a);
-    const pb = parse(b);
-    const len = Math.max(pa.length, pb.length);
-    for (let i = 0; i < len; i++) {
-        const na = pa[i] || 0;
-        const nb = pb[i] || 0;
-        if (na > nb) return 1;
-        if (na < nb) return -1;
-    }
-    return 0;
-}
-
-/**
- * Gọi GitHub Releases API để lấy thông tin phiên bản mới nhất
- * Sử dụng Node.js built-in https module (không cần dependency ngoài)
- */
-function fetchLatestRelease() {
-    return new Promise((resolve, reject) => {
-        const options = {
-            hostname: 'api.github.com',
-            path: '/repos/UnlockerMacroGenshinVN/CUTTOOL/releases/latest',
-            method: 'GET',
-            headers: {
-                'User-Agent': 'CutTool-Updater',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            timeout: 10000
-        };
-
-        const req = https.request(options, (res) => {
-            let data = '';
-            res.on('data', chunk => { data += chunk; });
-            res.on('end', () => {
-                try {
-                    if (res.statusCode === 200) {
-                        resolve(JSON.parse(data));
-                    } else {
-                        reject(new Error(`GitHub API trả về status ${res.statusCode}`));
-                    }
-                } catch (e) {
-                    reject(new Error(`Lỗi parse JSON từ GitHub: ${e.message}`));
-                }
-            });
-        });
-
-        req.on('error', (e) => reject(new Error(`Lỗi kết nối GitHub: ${e.message}`)));
-        req.on('timeout', () => { req.destroy(); reject(new Error('GitHub API timeout')); });
-        req.end();
-    });
-}
-
-// ── IPC: Lấy phiên bản hiện tại ──────────────────────────────────────────────
+// ── Version & Auto-Updater IPC Handlers ─────────────────────────────────────
 ipcMain.handle('get-app-version', async () => {
-    return getAppVersion();
+    return updater.getAppVersion();
 });
 
-// ── IPC: Kiểm tra cập nhật từ GitHub ──────────────────────────────────────────
 ipcMain.handle('check-for-update', async () => {
-    try {
-        const currentVersion = getAppVersion();
-        const release = await fetchLatestRelease();
-        const latestVersion = (release.tag_name || '').replace(/^v/i, '');
-        const hasUpdate = compareSemver(latestVersion, currentVersion) > 0;
+    return updater.checkForUpdate();
+});
 
-        // Lấy URL download từ assets (file .rar hoặc .zip)
-        let downloadUrl = '';
-        if (release.assets && release.assets.length > 0) {
-            downloadUrl = release.assets[0].browser_download_url || '';
-        }
+ipcMain.handle('start-update-download', async (event) => {
+    return updater.startDownloadAndStage(event.sender);
+});
 
-        logE(`[Update Check] current=${currentVersion}, latest=${latestVersion}, hasUpdate=${hasUpdate}`);
+ipcMain.handle('cancel-update-download', async () => {
+    updater.cancelDownload();
+    return { ok: true };
+});
 
-        return {
-            hasUpdate,
-            currentVersion,
-            latestVersion,
-            releaseNotes: release.body || '',
-            downloadUrl,
-            htmlUrl: release.html_url || ''
-        };
-    } catch (e) {
-        logE(`[Update Check] Lỗi: ${e.message}`);
-        return {
-            hasUpdate: false,
-            currentVersion: getAppVersion(),
-            latestVersion: '',
-            releaseNotes: '',
-            downloadUrl: '',
-            htmlUrl: '',
-            error: e.message
-        };
-    }
+ipcMain.handle('apply-update-and-restart', async () => {
+    return updater.applyUpdateAndRestart({ pyProc, stopPython });
+});
+
+ipcMain.handle('get-update-state', async () => {
+    return updater.getUpdateState();
 });
 
 // ── IPC: Mở URL ngoài trình duyệt (có validation bảo mật) ───────────────────

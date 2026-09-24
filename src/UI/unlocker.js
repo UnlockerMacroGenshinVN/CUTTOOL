@@ -229,12 +229,22 @@ function launchGame(gamePath, app) {
         fs.mkdirSync(pluginsDir, { recursive: true });
     }
 
-    // Copy DLL nếu chưa có
+    // Copy DLL nếu có file mới hơn hoặc chưa có
     const dllSrc = path.join(unlockerDir, "CUTTOOL.UnlockerIsland.dll");
     const dllDst = path.join(pluginsDir, "CUTTOOL.UnlockerIsland.dll");
-    if (fs.existsSync(dllSrc) && !fs.existsSync(dllDst)) {
+    if (fs.existsSync(dllSrc)) {
         try {
-            fs.copyFileSync(dllSrc, dllDst);
+            let needCopy = !fs.existsSync(dllDst);
+            if (!needCopy) {
+                const sStat = fs.statSync(dllSrc);
+                const dStat = fs.statSync(dllDst);
+                if (sStat.size !== dStat.size || sStat.mtimeMs > dStat.mtimeMs) {
+                    needCopy = true;
+                }
+            }
+            if (needCopy) {
+                fs.copyFileSync(dllSrc, dllDst);
+            }
         } catch (e) {
             console.error("Lỗi copy DLL:", e);
         }

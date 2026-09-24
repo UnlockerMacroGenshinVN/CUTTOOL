@@ -173,17 +173,34 @@
       <div id="updateModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
         <div class="bg-surface-container-high rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline/30 animate-[fadeInUp_0.3s_ease-out]">
           <div class="flex items-center gap-3 mb-4">
-            <span class="material-symbols-outlined text-3xl text-amber-400">notification_important</span>
-            <h3 class="text-xl font-bold text-on-surface">Có bản cập nhật mới!</h3>
+            <span id="updateModalIcon" class="material-symbols-outlined text-3xl text-amber-400">notification_important</span>
+            <h3 id="updateModalTitle" class="text-xl font-bold text-on-surface">Có bản cập nhật mới!</h3>
           </div>
           <p id="updateVersionInfo" class="text-on-surface-variant text-sm mb-3"></p>
           <div id="updateReleaseNotes" class="text-on-surface-variant text-xs bg-surface-container/60 rounded-lg p-3 mb-4 max-h-32 overflow-y-auto border border-outline/20"></div>
+          
+          <!-- Section tiến trình tải & cập nhật (mặc định ẩn) -->
+          <div id="updateProgressSection" class="hidden mb-4">
+            <div class="flex justify-between items-center text-xs mb-1.5">
+              <span id="updateStatusText" class="text-on-surface font-medium">Đang tải bản cập nhật...</span>
+              <span id="updateProgressPercent" class="text-teal font-bold">0%</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden border border-outline/20">
+              <div id="updateProgressBar" class="bg-teal h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-on-surface-variant mt-1.5">
+              <span id="updateProgressDetail">0 MB / 0 MB</span>
+              <span id="updateProgressSpeed">0 MB/s</span>
+            </div>
+          </div>
+
           <div class="flex gap-3">
-            <button id="updateDownloadBtn" class="flex-1 bg-teal hover:bg-teal/80 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-base">download</span>
-              Tải về
+            <button id="updateDownloadBtn" class="flex-1 bg-teal hover:bg-teal/80 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-md">
+              <span id="updateDownloadIcon" class="material-symbols-outlined text-base">download</span>
+              <span id="updateDownloadText">Tải và Cập nhật</span>
             </button>
-            <button id="updateCloseBtn" class="flex-1 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg px-4 py-2.5 text-sm font-semibold border border-outline/30 transition-all active:scale-95">
+            <button id="updateCloseBtn" class="flex-1 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg px-4 py-2.5 text-sm font-semibold border border-outline/30 transition-all active:scale-95 cursor-pointer">
               Để sau
             </button>
           </div>
