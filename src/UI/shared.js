@@ -1,6 +1,33 @@
 // ── shared.js ─────────────────────────────────────────────────────────────────
-// Dùng chung cho tất cả trang: quản lý trạng thái RUN MACRO + START GAME
+// Dùng chung cho tất cả tab: SPA tab router + quản lý trạng thái RUN MACRO + START GAME
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Xóa toàn bộ cài đặt cũ lưu trong localStorage từ chế độ dev khi lên bản 1.1.3
+try {
+    if (!localStorage.getItem("clean_state_v1_1_3")) {
+        localStorage.clear();
+        localStorage.setItem("clean_state_v1_1_3", "1");
+    }
+} catch {}
+
+const BUILTIN_COMBOS = [
+    "C0:  Combo Skirk C0 EQA 120fps",
+    "C0:  Combo Skirk C0 EA 120fps",
+    "C0:  Combo Skirk C0 EQA 60fps"
+];
+
+function formatKey(key) {
+    if (!key) return "";
+    const map = {
+        shift: "Shift", ctrl: "Ctrl", alt: "Alt", caps_lock: "CapsLock",
+        space: "Space", enter: "Enter", esc: "Esc", delete: "Delete",
+        middle: "Mouse Middle"
+    };
+    if (map[key]) return map[key];
+    if (/^f\d+$/i.test(key)) return key.toUpperCase();
+    if (/^mouse_\d+$/.test(key)) return `mouse_${key.slice(6)}`;
+    return key.length === 1 ? key.toUpperCase() : key;
+}
 
 // ── Global Browser Navigation Blocker (mouse 3/4) ────────────────────────────
 ;['mousedown', 'mouseup', 'click', 'auxclick'].forEach(eventType => {
@@ -16,6 +43,76 @@ window.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
 }, true);
+
+// ── Instant SPA Tab Router (0ms tab switch, zero page reload) ────────────────
+window.activeTab = 'home';
+
+const NAV_ACTIVE_CLASS = 'flex items-center gap-3 px-4 py-3 bg-surface-container-high text-teal border-l-4 border-teal font-label-sm rounded-r-DEFAULT cursor-pointer active:scale-[0.98]';
+const NAV_INACTIVE_CLASS = 'flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 font-label-sm border-l-4 border-transparent rounded-r-DEFAULT cursor-pointer active:scale-[0.98]';
+
+function switchTab(tabName, updateHash = true) {
+    if (!['home', 'macros', 'settings'].includes(tabName)) {
+        tabName = 'home';
+    }
+    if (window.activeTab === tabName && document.getElementById(`view-${tabName}`) && !document.getElementById(`view-${tabName}`).classList.contains('hidden')) {
+        return;
+    }
+
+    // Đóng các modal bắt phím nếu đang mở khi chuyển sang tab khác
+    if (tabName !== 'macros' && typeof closeKeyBindModal === 'function') {
+        closeKeyBindModal();
+    }
+    if (tabName !== 'settings' && typeof closeNetworkKeyBindModal === 'function') {
+        closeNetworkKeyBindModal();
+    }
+
+    window.activeTab = tabName;
+
+    const views = {
+        home: document.getElementById('view-home'),
+        macros: document.getElementById('view-macros'),
+        settings: document.getElementById('view-settings')
+    };
+
+    const navs = {
+        home: document.getElementById('nav-home'),
+        macros: document.getElementById('nav-macros'),
+        settings: document.getElementById('nav-settings')
+    };
+
+    const titles = {
+        home: 'Trang chính - Cứt tool',
+        macros: 'Macros - Cứt tool',
+        settings: 'Tùy chỉnh - Cứt tool'
+    };
+
+    Object.keys(views).forEach((key) => {
+        if (views[key]) {
+            views[key].classList.toggle('hidden', key !== tabName);
+        }
+        if (navs[key]) {
+            navs[key].className = (key === tabName) ? NAV_ACTIVE_CLASS : NAV_INACTIVE_CLASS;
+        }
+    });
+
+    document.title = titles[tabName] || 'Cứt tool';
+    if (updateHash && window.location.hash !== `#${tabName}`) {
+        history.replaceState(null, '', `#${tabName}`);
+    }
+    window.scrollTo(0, 0);
+
+    // Đồng bộ giao diện ngay lập tức từ bộ nhớ mà không cần reload
+    if (tabName === 'home') {
+        if (typeof renderBoundCombosFromMemory === 'function') renderBoundCombosFromMemory();
+        if (typeof syncDbUnlockerInputsFromMemory === 'function') syncDbUnlockerInputsFromMemory();
+    } else if (tabName === 'macros') {
+        if (typeof renderCombosFromConfig === 'function') renderCombosFromConfig();
+    } else if (tabName === 'settings') {
+        if (typeof updateUIFromConfig === 'function') updateUIFromConfig();
+    }
+}
+
+window.switchTab = switchTab;
 
 // ── State keys ───────────────────────────────────────────────────────────────
 const STATE_RUN = 'macro_run_active';
@@ -46,16 +143,16 @@ function _showToastFallback(message, isError = false) {
     if (!toast) {
         toast = document.createElement('div');
         toast.id = '_sharedToast';
-        toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:14px 20px;border-radius:12px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;backdrop-filter:blur(12px);transition:all 0.3s;transform:translateY(40px);opacity:0;border:1px solid;max-width:420px;line-height:1.4;';
+        toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:14px 20px;border-radius:12px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;transition:all 0.25s;transform:translateY(40px);opacity:0;border:1px solid;max-width:420px;line-height:1.4;';
         document.body.appendChild(toast);
     }
     if (isError) {
-        toast.style.background = 'rgba(69,10,10,0.92)';
+        toast.style.background = 'rgba(69,10,10,0.95)';
         toast.style.color = '#fca5a5';
         toast.style.borderColor = 'rgba(239,68,68,0.5)';
         toast.innerHTML = `<span style="font-size:18px">⚠️</span><span style="white-space:pre-wrap">${message}</span>`;
     } else {
-        toast.style.background = 'rgba(15,118,110,0.92)';
+        toast.style.background = 'rgba(15,118,110,0.95)';
         toast.style.color = '#99f6e4';
         toast.style.borderColor = 'rgba(45,212,191,0.5)';
         toast.innerHTML = `<span style="font-size:18px">✅</span><span>${message}</span>`;
@@ -123,14 +220,17 @@ async function handleLaunchGame() {
 }
 
 // ── Frontend Heartbeat ─────────────────────────────────────────────────
+let _heartbeatInFlight = false;
 function startFrontendHeartbeat() {
     const sendPing = () => {
-        fetch('http://localhost:5000/heartbeat', { method: 'POST' }).catch(() => {});
+        if (document.hidden || _heartbeatInFlight) return;
+        _heartbeatInFlight = true;
+        fetch('http://localhost:5000/heartbeat', { method: 'POST' })
+            .catch(() => {})
+            .finally(() => { _heartbeatInFlight = false; });
     };
     sendPing();
-    // Tăng từ 1500ms → 3000ms: giảm tải CPU trên máy Win10 chậm
-    // Backend timeout cũng được tăng 6s → 15s nên vẫn an toàn
-    setInterval(sendPing, 3000);
+    setInterval(sendPing, 5000);
 }
 
 // ── Init on DOM ready ─────────────────────────────────────────────────────────
@@ -143,6 +243,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (runBtn)   runBtn.addEventListener('click', toggleRun);
     if (startBtn) startBtn.addEventListener('click', handleLaunchGame);
+
+    // Gắn sự kiện chuyển tab tức thì cho sidebar
+    document.querySelectorAll('[data-tab]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTab = link.getAttribute('data-tab');
+            switchTab(targetTab);
+        });
+    });
+
+    // Khôi phục tab từ URL hash nếu có (#macros, #settings)
+    const initialHash = (window.location.hash || '').replace('#', '');
+    if (['home', 'macros', 'settings'].includes(initialHash)) {
+        switchTab(initialHash, false);
+    }
+
+    window.addEventListener('hashchange', () => {
+        const h = (window.location.hash || '').replace('#', '');
+        if (['home', 'macros', 'settings'].includes(h)) {
+            switchTab(h, false);
+        }
+    });
 
     startFrontendHeartbeat();
 });

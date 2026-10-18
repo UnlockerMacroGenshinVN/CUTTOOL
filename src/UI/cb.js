@@ -1,27 +1,6 @@
-const BUILTIN_COMBOS = [
-    "C0:  Combo Skirk C0 EQA 120fps",
-    "C0:  Combo Skirk C0 EA 120fps",
-    "C0:  Combo Skirk C0 EQA 60fps"
-];
-
-let currentConfig = { comboSignKeys: {}, FPS: 120, customCombos: [] };
 let activeBindingTarget = null; // { isBuiltin, comboStr, id, name }
 let keyCaptureKeyHandler = null;
 let keyCaptureMouseHandler = null;
-let comboLoaded = false;
-
-function formatKey(key) {
-    if (!key) return "";
-    const map = {
-        shift: "Shift", ctrl: "Ctrl", alt: "Alt", caps_lock: "CapsLock",
-        space: "Space", enter: "Enter", esc: "Esc", delete: "Delete",
-        middle: "Mouse Middle"
-    };
-    if (map[key]) return map[key];
-    if (/^f\d+$/i.test(key)) return key.toUpperCase();
-    if (/^mouse_\d+$/.test(key)) return `mouse_${key.slice(6)}`;
-    return key.length === 1 ? key.toUpperCase() : key;
-}
 
 function resolveKeyName(e) {
     // ── Mouse ────────────────────────────────────────────────────────────
@@ -62,14 +41,14 @@ async function fetchConfig() {
     try {
         const res = await fetch("http://localhost:5000/config");
         if (res.ok) {
-            currentConfig = await res.json();
-            localStorage.setItem("comboSignKeys", JSON.stringify(currentConfig.comboSignKeys || {}));
-            localStorage.setItem("customCombos", JSON.stringify(currentConfig.customCombos || []));
+            window.sharedMacroConfig = await res.json();
+            localStorage.setItem("comboSignKeys", JSON.stringify(window.sharedMacroConfig.comboSignKeys || {}));
+            localStorage.setItem("customCombos", JSON.stringify(window.sharedMacroConfig.customCombos || []));
             return;
         }
     } catch {}
 
-    currentConfig = {
+    window.sharedMacroConfig = {
         comboSignKeys: JSON.parse(localStorage.getItem("comboSignKeys") || "{}"),
         FPS: Number(localStorage.getItem("FPS")) || 120,
         customCombos: JSON.parse(localStorage.getItem("customCombos") || "[]")
@@ -77,13 +56,17 @@ async function fetchConfig() {
 }
 
 async function saveConfig() {
-    localStorage.setItem("comboSignKeys", JSON.stringify(currentConfig.comboSignKeys || {}));
-    localStorage.setItem("customCombos", JSON.stringify(currentConfig.customCombos || []));
+    const cfg = window.sharedMacroConfig || { comboSignKeys: {}, FPS: 120, customCombos: [] };
+    localStorage.setItem("comboSignKeys", JSON.stringify(cfg.comboSignKeys || {}));
+    localStorage.setItem("customCombos", JSON.stringify(cfg.customCombos || []));
+    if (typeof renderBoundCombosFromConfig === "function") {
+        renderBoundCombosFromConfig(cfg);
+    }
     try {
         await fetch("http://localhost:5000/save", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(currentConfig)
+            body: JSON.stringify(cfg)
         });
     } catch (e) {
         console.warn("Backend save error, saved to localStorage", e);
@@ -91,11 +74,12 @@ async function saveConfig() {
 }
 
 function renderCombosFromConfig() {
+    const cfg = window.sharedMacroConfig || { comboSignKeys: {}, FPS: 120, customCombos: [] };
     const allCombos = [];
 
     // Built-in combos
     BUILTIN_COMBOS.forEach((comboStr, idx) => {
-        const key = currentConfig.comboSignKeys && currentConfig.comboSignKeys[comboStr];
+        const key = cfg.comboSignKeys && cfg.comboSignKeys[comboStr];
         allCombos.push({
             id: `builtin_${idx}`,
             isBuiltin: true,
@@ -107,7 +91,7 @@ function renderCombosFromConfig() {
     });
 
     // Custom combos
-    const customCombos = Array.isArray(currentConfig.customCombos) ? currentConfig.customCombos : [];
+    const customCombos = Array.isArray(cfg.customCombos) ? cfg.customCombos : [];
     customCombos.forEach((c) => {
         allCombos.push({
             id: c.id,
@@ -153,7 +137,7 @@ function renderCombosFromConfig() {
             : '';
 
         return `
-            <div class="bg-surface-container border border-outline/40 hover:border-teal/50 rounded-xl p-5 shadow-lg transition-all flex flex-col justify-between gap-4 group">
+            <div class="bg-surface-container border border-outline/40 hover:border-teal/50 rounded-xl p-5 shadow-lg transition-colors flex flex-col justify-between gap-4 group">
                 <div>
                     <div class="flex items-center justify-between mb-3">
                         ${badgeType}
@@ -171,29 +155,20 @@ function renderCombosFromConfig() {
     }).join("");
 }
 
-// Load combo lần đầu (chỉ gọi 1 lần khi DOMContentLoaded)
-async function initialLoadCombos() {
-    if (comboLoaded) return;
-    comboLoaded = true;
-    await fetchConfig();
-    renderCombosFromConfig();
-}
-
 // Reload thủ công (nút Reload hoặc sau khi thêm combo)
 async function reloadCombos() {
     await fetchConfig();
     renderCombosFromConfig();
+    if (typeof renderBoundCombosFromConfig === "function") {
+        renderBoundCombosFromConfig(window.sharedMacroConfig);
+    }
 }
 
 // ── Key Binding Modal Logic ──────────────────────────────────────────────────
-
-// Chặn browser navigation khi modal đóng (không chặn khi CaptureMouse đang hoạt động
-// vì keyCaptureMouseHandler cần nhận được các sự kiện mouse 3/4 để gán phím)
 let _navBlockHandler = null;
 function startNavBlock() {
     stopNavBlock();
     _navBlockHandler = (e) => {
-        // Chỉ chặn khi KHÔNG đang trong chế độ capture phím
         if (keyCaptureMouseHandler) return;
         if (e.button === 3 || e.button === 4) {
             e.preventDefault();
@@ -213,6 +188,7 @@ function stopNavBlock() {
 }
 
 function openKeyBindModal(id) {
+    const cfg = window.sharedMacroConfig || { comboSignKeys: {}, customCombos: [] };
     let target = null;
 
     if (id.startsWith("builtin_")) {
@@ -225,7 +201,7 @@ function openKeyBindModal(id) {
             name: `Combo ${idx + 1}: ${comboStr}`
         };
     } else {
-        const c = (currentConfig.customCombos || []).find(item => item.id === id);
+        const c = (cfg.customCombos || []).find(item => item.id === id);
         if (c) {
             target = {
                 id: c.id,
@@ -240,38 +216,38 @@ function openKeyBindModal(id) {
 
     const modal = document.getElementById("keyBindModal");
     const title = document.getElementById("bindModalTitle");
-    title.textContent = `Gán phím cho "${target.name}"`;
+    if (title) title.textContent = `Gán phím cho "${target.name}"`;
 
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
 
-    // Chặn browser navigation ngay khi modal mở (trước cả khi click Gán phím)
     startNavBlock();
     startKeyCapture();
 }
 
 function closeKeyBindModal() {
     stopKeyCapture();
-    stopNavBlock(); // Gỡ chặn navigation khi đóng modal
+    stopNavBlock();
     activeBindingTarget = null;
     const modal = document.getElementById("keyBindModal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
 }
 
 function startKeyCapture() {
     stopKeyCapture();
 
-    // ── Keyboard capture handler ─────────────────────────────────────────
     keyCaptureKeyHandler = async (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        // Remove listeners immediately
         window.removeEventListener("keydown", keyCaptureKeyHandler, true);
         window.removeEventListener("mousedown", keyCaptureMouseHandler, true);
 
-        // ESC → hủy, không gán
         if (e.code === "Escape") {
             closeKeyBindModal();
             return;
@@ -283,37 +259,30 @@ function startKeyCapture() {
         applyKeyBinding(keyName);
     };
 
-    // ── Mouse capture handler ────────────────────────────────────────────
     keyCaptureMouseHandler = async (e) => {
-        // 1. Chuột trái (button 0): cho phép bấm nút "Hủy" / "Xóa phím gán" trong modal
         if (e.button === 0) {
             const btn = e.target.closest("button");
             if (btn) {
-                // Người dùng click vào nút UI -> gỡ listener capture để nút hoạt động bình thường
                 stopKeyCapture();
             }
-            return; // Không gán chuột trái làm bind key
+            return;
         }
 
-        // 2. Chuột phải (button 2): không gán, chặn menu ngữ cảnh
         if (e.button === 2) {
             e.preventDefault();
             e.stopPropagation();
             return;
         }
 
-        // 3. Các nút chuột khác (Middle / Mouse 3 / Mouse 4 / Mouse N):
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
 
         const keyName = resolveKeyName(e);
-        const target  = activeBindingTarget; // lưu trước khi gỡ listener
+        const target  = activeBindingTarget;
 
-        // Gỡ listener capture ngay lập tức
         stopKeyCapture();
 
-        // Chặn mouseup/click tiếp theo tránh sự kiện dư thừa
         const preventNext = (ev) => { ev.preventDefault(); ev.stopPropagation(); };
         window.addEventListener('mouseup', preventNext, { capture: true, once: true });
         window.addEventListener('click',   preventNext, { capture: true, once: true });
@@ -327,14 +296,15 @@ function startKeyCapture() {
 }
 
 async function applyKeyBinding(keyName, target) {
-    // target có thể được truyền vào hoặc dùng activeBindingTarget
     const tgt = target || activeBindingTarget;
     if (!tgt) return;
+    if (!window.sharedMacroConfig) window.sharedMacroConfig = { comboSignKeys: {}, FPS: 120, customCombos: [] };
+
     if (tgt.isBuiltin) {
-        if (!currentConfig.comboSignKeys) currentConfig.comboSignKeys = {};
-        currentConfig.comboSignKeys[tgt.comboStr] = keyName;
+        if (!window.sharedMacroConfig.comboSignKeys) window.sharedMacroConfig.comboSignKeys = {};
+        window.sharedMacroConfig.comboSignKeys[tgt.comboStr] = keyName;
     } else {
-        const c = (currentConfig.customCombos || []).find(item => item.id === tgt.id);
+        const c = (window.sharedMacroConfig.customCombos || []).find(item => item.id === tgt.id);
         if (c) c.hotkey = keyName;
     }
 
@@ -355,26 +325,27 @@ function stopKeyCapture() {
 }
 
 async function clearCurrentBind() {
-    if (!activeBindingTarget) return;
+    if (!activeBindingTarget || !window.sharedMacroConfig) return;
 
     if (activeBindingTarget.isBuiltin) {
-        if (currentConfig.comboSignKeys) {
-            delete currentConfig.comboSignKeys[activeBindingTarget.comboStr];
+        if (window.sharedMacroConfig.comboSignKeys) {
+            delete window.sharedMacroConfig.comboSignKeys[activeBindingTarget.comboStr];
         }
     } else {
-        const c = (currentConfig.customCombos || []).find(item => item.id === activeBindingTarget.id);
+        const c = (window.sharedMacroConfig.customCombos || []).find(item => item.id === activeBindingTarget.id);
         if (c) delete c.hotkey;
     }
 
     await saveConfig();
     closeKeyBindModal();
-    renderCombosFromConfig(); // Re-render từ config đã có
+    renderCombosFromConfig();
 }
 
 // ── Custom Combo Iframe Modal Logic ─────────────────────────────────────────
 function openComboModal(editId) {
     const modal = document.getElementById("comboModal");
     const iframe = document.getElementById("comboIframe");
+    if (!modal || !iframe) return;
     let src = "cuscombo.html";
     if (editId) {
         src += `?edit=${editId}`;
@@ -387,10 +358,12 @@ function openComboModal(editId) {
 function closeComboModal() {
     const modal = document.getElementById("comboModal");
     const iframe = document.getElementById("comboIframe");
-    iframe.src = "about:blank";
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-    reloadCombos(); // Reload khi đóng modal thêm/sửa combo
+    if (iframe) iframe.src = "about:blank";
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+    reloadCombos();
 }
 
 // ── Delete Combo Modal Logic ────────────────────────────────────────────────
@@ -402,29 +375,29 @@ function openDeleteModal(id, name) {
     pendingDeleteName = name;
     const modal = document.getElementById("deleteModal");
     const text = document.getElementById("deleteModalText");
-    text.textContent = `Bạn có chắc muốn xóa combo "${name}"?`;
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
+    if (text) text.textContent = `Bạn có chắc muốn xóa combo "${name}"?`;
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
 }
 
 function closeDeleteModal() {
     pendingDeleteId = null;
     pendingDeleteName = null;
     const modal = document.getElementById("deleteModal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
 }
 
 async function confirmDeleteCombo() {
-    if (!pendingDeleteId) return;
+    if (!pendingDeleteId || !window.sharedMacroConfig) return;
     const id = pendingDeleteId;
     closeDeleteModal();
 
-    currentConfig.customCombos = (currentConfig.customCombos || []).filter(c => c.id !== id);
+    window.sharedMacroConfig.customCombos = (window.sharedMacroConfig.customCombos || []).filter(c => c.id !== id);
     await saveConfig();
     renderCombosFromConfig();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    initialLoadCombos();
-});

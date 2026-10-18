@@ -534,22 +534,22 @@ echo [%date% %time%] PAYLOAD_ROOT: !PAYLOAD_ROOT! >> "!LOG_FILE!"
 :: 1. Cho tien trinh app cu thoat han (toi da 25 giay)
 set "WAIT_COUNT=0"
 :WAIT_LOOP
-tasklist /fi "PID eq !OLD_PID!" 2>nul | find "!OLD_PID!" >nul
+tasklist /fi "PID eq %OLD_PID%" 2>nul | findstr "%OLD_PID%" >nul
 if %ERRORLEVEL% equ 0 (
     set /a WAIT_COUNT+=1
     if !WAIT_COUNT! geq 25 (
-        echo [%date% %time%] Tien trinh chua thoat sau 25s, buoc dung PID !OLD_PID!... >> "!LOG_FILE!"
-        taskkill /F /PID !OLD_PID! >nul 2>&1
+        echo [%date% %time%] Tien trinh chua thoat sau 25s, buoc dung PID %OLD_PID%... >> "!LOG_FILE!"
+        taskkill /F /PID %OLD_PID% >nul 2>&1
         goto WAIT_DONE
     )
-    timeout /t 1 /nobreak >nul
+    ping 127.0.0.1 -n 2 >nul
     goto WAIT_LOOP
 )
 :WAIT_DONE
-echo [%date% %time%] Tien trinh !OLD_PID! da ket thuc hoan toan. >> "!LOG_FILE!"
+echo [%date% %time%] Tien trinh %OLD_PID% da ket thuc hoan toan. >> "!LOG_FILE!"
 
 :: Cho them 2 giay de he dieu hanh giai phong file handles
-timeout /t 2 /nobreak >nul
+ping 127.0.0.1 -n 3 >nul
 
 :: 2. Sao luu ban cu (Backup truoc khi ghi de de rollback neu co loi)
 echo [%date% %time%] Dang tao ban sao luu vao !BACKUP_DIR!... >> "!LOG_FILE!"
@@ -660,12 +660,15 @@ async function applyUpdateAndRestart({ pyProc, stopPython }) {
         }
     }
 
-    // Spawn updater.bat chạy độc lập hoàn toàn (detached)
-    logUpdater('Đang kích hoạt updater.bat chạy nền...');
-    const child = spawn('cmd.exe', ['/c', scriptPath], {
+    // Kích hoạt updater.bat chạy nền hoàn toàn ẩn (triệt tiêu 100% cửa sổ console con trên Windows 10/11)
+    logUpdater('Đang kích hoạt updater.bat chạy nền ẩn...');
+    const vbsPath = path.join(getUpdateDir(), 'run_updater.vbs');
+    const vbsContent = `CreateObject("Wscript.Shell").Run "cmd.exe /c """ & "${scriptPath.replace(/\\/g, '\\\\')}" & """", 0, False`;
+    fs.writeFileSync(vbsPath, vbsContent, 'utf8');
+
+    const child = spawn('wscript.exe', [vbsPath], {
         detached: true,
-        stdio: 'ignore',
-        windowsHide: true
+        stdio: 'ignore'
     });
     child.unref();
 

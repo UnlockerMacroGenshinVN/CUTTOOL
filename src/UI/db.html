@@ -61,7 +61,6 @@
         },
       };
     </script>
-    <!-- External Stylesheet -->
   </head>
   <body
     class="bg-background text-on-background font-body-md antialiased min-h-screen flex selection:bg-teal selection:text-black"
@@ -84,22 +83,28 @@
         </div>
         <nav class="flex-1 flex flex-col gap-1 px-2">
           <a
+            id="nav-home"
+            data-tab="home"
             class="flex items-center gap-3 px-4 py-3 bg-surface-container-high text-teal border-l-4 border-teal font-label-sm rounded-r-DEFAULT cursor-pointer active:scale-[0.98]"
-            href="db.html"
+            href="#home"
           >
             <span class="material-symbols-outlined">home</span>
             Trang chính
           </a>
           <a
+            id="nav-macros"
+            data-tab="macros"
             class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 font-label-sm border-l-4 border-transparent rounded-r-DEFAULT cursor-pointer active:scale-[0.98]"
-            href="cb.html"
+            href="#macros"
           >
             <span class="material-symbols-outlined">apps</span>
-            Combo
+            Macros
           </a>
           <a
+            id="nav-settings"
+            data-tab="settings"
             class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors duration-200 font-label-sm border-l-4 border-transparent rounded-r-DEFAULT cursor-pointer active:scale-[0.98]"
-            href="cus.html"
+            href="#settings"
           >
             <span class="material-symbols-outlined">settings_suggest</span>
             Tùy chỉnh
@@ -119,281 +124,832 @@
         </button>
       </div>
     </aside>
+
     <main class="flex-1 w-full md:ml-[280px] relative">
-      <div
-        class="sticky top-0 w-full h-[320px] z-0 overflow-hidden bg-surface-container-lowest group"
-        id="hero-container"
-      >
+      <!-- ==================== VIEW 1: TRANG CHÍNH ==================== -->
+      <section id="view-home" class="w-full">
         <div
-          class="w-full h-full bg-cover bg-center object-cover transform scale-105 transition-transform duration-1000 ease-out"
-          id="hero-image"
-          style="background-image: url(&quot;assets/defbanner.png&quot;)"
-        ></div>
-        <div
-          class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none"
-        ></div>
-
-        <!-- Banner Title & Controls -->
-        <div id="bannerTitleContainer" class="absolute top-1/2 left-8 -translate-y-1/2 z-20 flex flex-col items-start gap-3 transition-all duration-500 pointer-events-none">
-          <h2 id="bannerAppName" class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tight transition-all duration-500">CutTool</h2>
-          <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-500">v1.1.1</p>
-        </div>
-        <div class="absolute top-4 right-6 z-20 flex items-center gap-2">
-          <!-- Check for Update Bell Button -->
-          <button
-            id="checkUpdateBtn"
-            title="Kiểm tra cập nhật"
-            class="relative bg-surface-container-highest/80 hover:bg-teal/20 text-on-surface-variant hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg p-2 text-xs font-semibold backdrop-blur-md shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
-          >
-            <span id="updateBellIcon" class="material-symbols-outlined text-lg">notifications</span>
-            <span id="updateBadgeDot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-surface-container-highest animate-pulse"></span>
-          </button>
-
-          <button
-            id="resetBannerBtn"
-            title="Đặt lại ảnh bìa mặc định"
-            class="hidden bg-surface-container-highest/80 hover:bg-red-500/20 text-on-surface-variant hover:text-red-400 border border-outline/40 hover:border-red-500/40 rounded-lg p-2 text-xs font-semibold backdrop-blur-md shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
-          >
-            <span class="material-symbols-outlined text-base">restart_alt</span>
-          </button>
-
-          <button
-            id="changeBannerBtn"
-            title="Thay đổi ảnh bìa trang chính"
-            class="bg-surface-container-highest/80 hover:bg-teal/20 text-on-surface hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg px-3 py-2 text-xs font-semibold backdrop-blur-md shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-          >
-            <span class="material-symbols-outlined text-base">photo_camera</span>
-            <span>Đổi ảnh bìa</span>
-          </button>
-        </div>
-        <input type="file" id="bannerFileInput" accept="image/*" class="hidden" />
-      </div>
-
-      <!-- Update Available Modal -->
-      <div id="updateModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="bg-surface-container-high rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline/30 animate-[fadeInUp_0.3s_ease-out]">
-          <div class="flex items-center gap-3 mb-4">
-            <span id="updateModalIcon" class="material-symbols-outlined text-3xl text-amber-400">notification_important</span>
-            <h3 id="updateModalTitle" class="text-xl font-bold text-on-surface">Có bản cập nhật mới!</h3>
-          </div>
-          <p id="updateVersionInfo" class="text-on-surface-variant text-sm mb-3"></p>
-          <div id="updateReleaseNotes" class="text-on-surface-variant text-xs bg-surface-container/60 rounded-lg p-3 mb-4 max-h-32 overflow-y-auto border border-outline/20"></div>
-          
-          <!-- Section tiến trình tải & cập nhật (mặc định ẩn) -->
-          <div id="updateProgressSection" class="hidden mb-4">
-            <div class="flex justify-between items-center text-xs mb-1.5">
-              <span id="updateStatusText" class="text-on-surface font-medium">Đang tải bản cập nhật...</span>
-              <span id="updateProgressPercent" class="text-teal font-bold">0%</span>
-            </div>
-            <!-- Progress Bar -->
-            <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden border border-outline/20">
-              <div id="updateProgressBar" class="bg-teal h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
-            </div>
-            <div class="flex justify-between items-center text-[11px] text-on-surface-variant mt-1.5">
-              <span id="updateProgressDetail">0 MB / 0 MB</span>
-              <span id="updateProgressSpeed">0 MB/s</span>
-            </div>
-          </div>
-
-          <div class="flex gap-3">
-            <button id="updateDownloadBtn" class="flex-1 bg-teal hover:bg-teal/80 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-md">
-              <span id="updateDownloadIcon" class="material-symbols-outlined text-base">download</span>
-              <span id="updateDownloadText">Tải và Cập nhật</span>
-            </button>
-            <button id="updateCloseBtn" class="flex-1 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg px-4 py-2.5 text-sm font-semibold border border-outline/30 transition-all active:scale-95 cursor-pointer">
-              Để sau
-            </button>
-          </div>
-        </div>
-      </div>
-      <div
-        class="relative z-10 w-full min-h-screen bg-background rounded-t-[32px] pt-12 pb-32 shadow-[0_-12px_40px_rgba(0,0,0,0.5)] mt-[-40px]"
-      >
-        <div
-          class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop"
+          class="sticky top-0 w-full h-[320px] z-0 overflow-hidden bg-surface-container-lowest group"
+          id="hero-container"
         >
-          <!-- 2 Boxes Layout: Fixed Equal Size & Float Left -->
-          <div class="w-full boxes-clearfix">
-            <div
-              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float"
-              id="boundCombosBox"
-              style="margin-right: 32px"
+          <div
+            class="w-full h-full bg-cover bg-center object-cover transform scale-105"
+            id="hero-image"
+            style="background-image: url(&quot;assets/defbanner.png&quot;)"
+          ></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none"
+          ></div>
+
+          <!-- Banner Title & Controls -->
+          <div id="bannerTitleContainer" class="absolute top-1/2 left-8 -translate-y-1/2 z-20 flex flex-col items-start gap-3 transition-all duration-300 pointer-events-none">
+            <h2 id="bannerAppName" class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tight transition-all duration-300">CutTool</h2>
+            <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-300">v1.1.3</p>
+          </div>
+          <div class="absolute top-4 right-6 z-20 flex items-center gap-2">
+            <!-- Check for Update Bell Button -->
+            <button
+              id="checkUpdateBtn"
+              title="Kiểm tra cập nhật"
+              class="relative bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface-variant hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
             >
-              <h3
-                class="text-lg font-semibold text-teal mb-4 flex items-center gap-2"
-              >
-                <span class="material-symbols-outlined text-teal"
-                  >keyboard</span
-                >
-                Combo đang sử dụng
-              </h3>
-              <div
-                class="flex flex-col gap-2 overflow-y-auto max-h-[230px] pr-1"
-                id="boundCombosList"
-              >
-                <div
-                  class="text-on-surface-variant/60 text-sm py-4 text-center"
-                >
-                  Đang tải cấu hình...
-                </div>
+              <span id="updateBellIcon" class="material-symbols-outlined text-lg">notifications</span>
+              <span id="updateBadgeDot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-surface-container-highest animate-pulse"></span>
+            </button>
+
+            <button
+              id="resetBannerBtn"
+              title="Đặt lại ảnh bìa mặc định"
+              class="hidden bg-surface-container-highest/90 hover:bg-red-500/20 text-on-surface-variant hover:text-red-400 border border-outline/40 hover:border-red-500/40 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
+            >
+              <span class="material-symbols-outlined text-base">restart_alt</span>
+            </button>
+
+            <button
+              id="changeBannerBtn"
+              title="Thay đổi ảnh bìa trang chính"
+              class="bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg px-3 py-2 text-xs font-semibold shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <span class="material-symbols-outlined text-base">photo_camera</span>
+              <span>Đổi ảnh bìa</span>
+            </button>
+          </div>
+          <input type="file" id="bannerFileInput" accept="image/*" class="hidden" />
+        </div>
+
+        <!-- Update Available Modal -->
+        <div id="updateModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/75">
+          <div class="bg-surface-container-high rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-outline/30 animate-[fadeInUp_0.2s_ease-out]">
+            <div class="flex items-center gap-3 mb-4">
+              <span id="updateModalIcon" class="material-symbols-outlined text-3xl text-amber-400">notification_important</span>
+              <h3 id="updateModalTitle" class="text-xl font-bold text-on-surface">Có bản cập nhật mới!</h3>
+            </div>
+            <p id="updateVersionInfo" class="text-on-surface-variant text-sm mb-3"></p>
+            <div id="updateReleaseNotes" class="text-on-surface-variant text-xs bg-surface-container/60 rounded-lg p-3 mb-4 max-h-32 overflow-y-auto border border-outline/20"></div>
+            
+            <!-- Section tiến trình tải & cập nhật (mặc định ẩn) -->
+            <div id="updateProgressSection" class="hidden mb-4">
+              <div class="flex justify-between items-center text-xs mb-1.5">
+                <span id="updateStatusText" class="text-on-surface font-medium">Đang tải bản cập nhật...</span>
+                <span id="updateProgressPercent" class="text-teal font-bold">0%</span>
+              </div>
+              <!-- Progress Bar -->
+              <div class="w-full bg-surface-container rounded-full h-2.5 overflow-hidden border border-outline/20">
+                <div id="updateProgressBar" class="bg-teal h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
+              </div>
+              <div class="flex justify-between items-center text-[11px] text-on-surface-variant mt-1.5">
+                <span id="updateProgressDetail">0 MB / 0 MB</span>
+                <span id="updateProgressSpeed">0 MB/s</span>
               </div>
             </div>
-            <div
-              class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between"
-              id="statusFpsBox"
-            >
-              <div>
+
+            <div class="flex gap-3">
+              <button id="updateDownloadBtn" class="flex-1 bg-teal hover:bg-teal/80 text-black font-bold rounded-lg px-4 py-2.5 text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shadow-md">
+                <span id="updateDownloadIcon" class="material-symbols-outlined text-base">download</span>
+                <span id="updateDownloadText">Tải và Cập nhật</span>
+              </button>
+              <button id="updateCloseBtn" class="flex-1 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-lg px-4 py-2.5 text-sm font-semibold border border-outline/30 transition-all active:scale-95 cursor-pointer">
+                Để sau
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="relative z-10 w-full min-h-screen bg-background rounded-t-[32px] pt-12 pb-32 shadow-[0_-12px_40px_rgba(0,0,0,0.5)] mt-[-40px]"
+        >
+          <div
+            class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop"
+          >
+            <!-- 2 Boxes Layout: Fixed Equal Size & Float Left -->
+            <div class="w-full boxes-clearfix">
+              <div
+                class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col overflow-hidden"
+                id="boundCombosBox"
+                style="margin-right: 32px"
+              >
                 <h3
-                  class="text-lg font-semibold text-teal mb-4 flex items-center gap-2"
+                  class="text-lg font-semibold text-teal mb-4 flex items-center gap-2 shrink-0"
                 >
                   <span class="material-symbols-outlined text-teal"
-                    >settings</span
+                    >keyboard</span
                   >
-                  Trạng thái Macro
+                  Combo đang sử dụng
                 </h3>
-
-                <!-- Macro FPS Input -->
-                <div class="mb-5">
-                  <label
-                    for="macroFpsInput"
-                    class="block text-sm font-medium text-on-surface-variant mb-1.5"
-                  >
-                    Macro FPS
-                  </label>
-                  <div class="flex items-center gap-2">
-                    <input
-                      type="number"
-                      id="macroFpsInput"
-                      min="1"
-                      max="1000"
-                      value="120"
-                      class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold"
-                    />
-                    <button
-                      type="button"
-                      id="saveFpsBtn"
-                      class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-lg px-3 py-2 text-xs font-semibold transition-colors active:scale-95"
-                    >
-                      Lưu FPS
-                    </button>
-                  </div>
-                  <p id="fpsSaveMsg" class="text-xs mt-1.5 text-teal h-4 font-medium"></p>
-                </div>
-
-                <!-- Macro Status Label -->
-                <div>
-                  <span
-                    class="block text-sm font-medium text-on-surface-variant mb-1.5"
-                  >
-                    Trạng thái Macro
-                  </span>
+                <div
+                  class="flex flex-col gap-2 overflow-y-auto flex-1 min-h-0 pr-1"
+                  id="boundCombosList"
+                >
                   <div
-                    id="backendStatusBadge"
-                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all bg-white/5 text-on-surface-variant border-outline/30"
+                    class="text-on-surface-variant/60 text-sm py-4 text-center"
                   >
-                    <span id="backendStatusDot" class="w-2 h-2 rounded-full bg-gray-400"></span>
-                    <span id="backendStatusText">Đang kiểm tra...</span>
+                    Đang tải cấu hình...
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-surface-container border border-outline/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between"
+                id="statusFpsBox"
+              >
+                <div>
+                  <h3
+                    class="text-lg font-semibold text-teal mb-4 flex items-center gap-2"
+                  >
+                    <span class="material-symbols-outlined text-teal"
+                      >settings</span
+                    >
+                    Trạng thái Macro
+                  </h3>
+
+                  <!-- Macro FPS Input -->
+                  <div class="mb-5">
+                    <label
+                      for="macroFpsInput"
+                      class="block text-sm font-medium text-on-surface-variant mb-1.5"
+                    >
+                      Macro FPS
+                    </label>
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="number"
+                        id="macroFpsInput"
+                        min="1"
+                        max="1000"
+                        value="120"
+                        class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold"
+                      />
+                      <button
+                        type="button"
+                        id="saveFpsBtn"
+                        class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-lg px-3 py-2 text-xs font-semibold transition-colors active:scale-95"
+                      >
+                        Lưu FPS
+                      </button>
+                    </div>
+                    <p id="fpsSaveMsg" class="text-xs mt-1.5 text-teal h-4 font-medium"></p>
+                  </div>
+
+                  <!-- Macro Status Label -->
+                  <div>
+                    <span
+                      class="block text-sm font-medium text-on-surface-variant mb-1.5"
+                    >
+                      Trạng thái Macro
+                    </span>
+                    <div
+                      id="backendStatusBadge"
+                      class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all bg-white/5 text-on-surface-variant border-outline/30"
+                    >
+                      <span id="backendStatusDot" class="w-2 h-2 rounded-full bg-gray-400"></span>
+                      <span id="backendStatusText">Đang kiểm tra...</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Row 2: Unlocker & Game Config -->
-          <div class="w-full boxes-clearfix mt-6">
-            <div
-              class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-all duration-200"
-              style="margin-right: 32px"
-            >
-              <div>
-                <div class="flex items-center justify-between mb-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                      <span class="material-symbols-outlined">speed</span>
-                    </div>
-                    <h3 class="text-base font-bold text-on-background">
-                      Mở khóa FPS
-                    </h3>
-                  </div>
-                  <label class="relative inline-flex items-center cursor-pointer shrink-0 select-none">
-                    <input type="checkbox" id="db_FpsUnlock" class="sr-only peer">
-                    <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
-                  </label>
-                </div>
-                <div class="mb-4">
-                  <label class="block text-sm font-medium text-on-surface-variant mb-1.5">FPS mục tiêu</label>
-                  <input type="number" id="db_TargetFps" min="30" max="1000" class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold" />
-                </div>
-              </div>
-              <div class="mt-auto">
-                <button type="button" id="db_saveUnlockerBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors active:scale-95 w-full flex items-center justify-center gap-2 cursor-pointer">
-                  <span class="material-symbols-outlined text-base">save</span> Lưu Unlocker
-                </button>
-                <p id="db_unlockerSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
-              </div>
-            </div>
-
-            <div
-              class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-all duration-200"
-            >
-              <div>
-                <div class="flex items-center justify-between gap-3 mb-4">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
-                      <span class="material-symbols-outlined">sports_esports</span>
-                    </div>
-                    <div class="min-w-0">
-                      <h3 class="font-bold text-on-background text-base truncate">
-                        Đường dẫn file Game (GenshinImpact.exe)
+            <!-- Row 2: Unlocker & Game Config -->
+            <div class="w-full boxes-clearfix mt-6">
+              <div
+                class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-colors duration-200"
+                style="margin-right: 32px"
+              >
+                <div>
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">speed</span>
+                      </div>
+                      <h3 class="text-base font-bold text-on-background">
+                        Mở khóa FPS
                       </h3>
                     </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0 select-none">
+                      <input type="checkbox" id="db_FpsUnlock" class="sr-only peer">
+                      <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+                    </label>
                   </div>
-                  <span id="gamePathStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    File sẵn sàng
-                  </span>
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-on-surface-variant mb-1.5">FPS mục tiêu</label>
+                    <input type="number" id="db_TargetFps" min="30" max="1000" class="bg-surface-container-high border border-outline/40 text-on-surface rounded-lg px-3 py-2 text-sm w-32 focus:outline-none focus:border-teal font-mono font-semibold" />
+                  </div>
                 </div>
-
-                <div class="relative w-full mt-2">
-                  <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">folder_open</span>
-                  <input
-                    type="text"
-                    id="db_GamePath"
-                    placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe"
-                    class="w-full bg-surface-container-high border border-outline/40 rounded-xl pl-10 pr-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/40 text-sm focus:border-teal focus:outline-none transition-colors"
-                  />
+                <div class="mt-auto">
+                  <button type="button" id="db_saveUnlockerBtn" class="bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors active:scale-95 w-full flex items-center justify-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-base">save</span> Lưu Unlocker
+                  </button>
+                  <p id="db_unlockerSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
                 </div>
               </div>
 
-              <div class="mt-auto">
-                <input type="file" id="db_GamePathInput" accept=".exe" class="hidden" />
-                <div class="flex gap-2">
-                  <button
-                    type="button"
-                    id="db_browseGameBtn"
-                    class="px-4 py-2.5 rounded-xl border border-teal/40 bg-teal/10 hover:bg-teal/20 text-teal text-sm font-semibold transition-all flex items-center justify-center gap-2 flex-1 cursor-pointer active:scale-[0.98]"
-                  >
-                    <span class="material-symbols-outlined text-lg">file_open</span>
-                    <span>Duyệt file...</span>
-                  </button>
-                  <button
-                    type="button"
-                    id="db_saveGamePathBtn"
-                    class="px-4 py-2.5 rounded-xl bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 text-sm font-semibold transition-colors active:scale-95 flex items-center justify-center gap-2 flex-1 cursor-pointer"
-                  >
-                    <span class="material-symbols-outlined text-base">save</span>
-                    <span>Lưu đường dẫn</span>
-                  </button>
+              <div
+                class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-colors duration-200"
+              >
+                <div>
+                  <div class="flex items-center justify-between gap-3 mb-4">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined">sports_esports</span>
+                      </div>
+                      <div class="min-w-0">
+                        <h3 class="font-bold text-on-background text-base truncate">
+                          Đường dẫn file Game (GenshinImpact.exe)
+                        </h3>
+                      </div>
+                    </div>
+                    <span id="db_gamePathStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      File sẵn sàng
+                    </span>
+                  </div>
+
+                  <div class="relative w-full mt-2">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">folder_open</span>
+                    <input
+                      type="text"
+                      id="db_GamePath"
+                      placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe"
+                      class="w-full bg-surface-container-high border border-outline/40 rounded-xl pl-10 pr-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/40 text-sm focus:border-teal focus:outline-none transition-colors"
+                    />
+                  </div>
                 </div>
-                <p id="db_gamePathSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
+
+                <div class="mt-auto">
+                  <input type="file" id="db_GamePathInput" accept=".exe" class="hidden" />
+                  <div class="flex gap-2">
+                    <button
+                      type="button"
+                      id="db_browseGameBtn"
+                      class="px-4 py-2.5 rounded-xl border border-teal/40 bg-teal/10 hover:bg-teal/20 text-teal text-sm font-semibold transition-all flex items-center justify-center gap-2 flex-1 cursor-pointer active:scale-[0.98]"
+                    >
+                      <span class="material-symbols-outlined text-lg">file_open</span>
+                      <span>Duyệt file...</span>
+                    </button>
+                    <button
+                      type="button"
+                      id="db_saveGamePathBtn"
+                      class="px-4 py-2.5 rounded-xl bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 text-sm font-semibold transition-colors active:scale-95 flex items-center justify-center gap-2 flex-1 cursor-pointer"
+                    >
+                      <span class="material-symbols-outlined text-base">save</span>
+                      <span>Lưu đường dẫn</span>
+                    </button>
+                  </div>
+                  <p id="db_gamePathSaveMsg" class="text-xs mt-2 text-teal text-center h-4 font-medium"></p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- ==================== VIEW 2: MACROS ==================== -->
+      <section id="view-macros" class="hidden w-full p-margin-desktop bg-transparent min-h-screen">
+        <div
+          class="flex items-center justify-between mb-8 pb-4 border-b border-outline/20"
+        >
+          <div>
+            <h2 class="font-headline-md text-on-background font-bold">
+              Danh sách Combo
+            </h2>
+            <p class="text-sm text-on-surface-variant mt-1">
+              Hiển thị các combo hiện có và chỉnh sửa/gán phím.
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant hover:text-teal font-medium px-3 py-2.5 rounded-lg border border-outline/30 flex items-center gap-1.5 transition-all active:scale-[0.98]"
+              type="button"
+              onclick="reloadCombos()"
+              title="Tải lại danh sách combo"
+            >
+              <span class="material-symbols-outlined text-lg">refresh</span>
+              Reload
+            </button>
+            <button
+              class="bg-teal hover:bg-teal/80 text-black font-semibold px-4 py-2.5 rounded-lg shadow-lg flex items-center gap-2 transition-all active:scale-[0.98]"
+              type="button"
+              onclick="openComboModal()"
+            >
+              <span class="material-symbols-outlined text-lg">add</span>
+              + Thêm Combo
+            </button>
+          </div>
+        </div>
+        <!-- Combo Grid -->
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          id="comboGrid"
+        >
+          <div class="col-span-full text-center py-12 text-on-surface-variant/60">
+            Đang tải danh sách combo...
+          </div>
+        </div>
+
+        <!-- Key Binding Modal Overlay -->
+        <div
+          class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4"
+          id="keyBindModal"
+        >
+          <div
+            class="bg-surface-container border border-outline/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-center flex flex-col items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 bg-teal/15 text-teal border border-teal/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-2xl">keyboard</span>
+            </div>
+            <h3 class="text-lg font-bold text-on-background" id="bindModalTitle">
+              Gán phím cho Combo
+            </h3>
+            <p class="text-sm text-on-surface-variant">
+              Nhấn phím bất kỳ trên bàn phím hoặc nút chuột để gán.<br /><span
+                class="text-xs text-teal/80"
+                >Nhấn
+                <kbd
+                  class="px-1.5 py-0.5 bg-surface-container-high border border-outline/40 rounded"
+                  >ESC</kbd
+                >
+                để hủy</span
+              >
+            </p>
+            <div
+              class="px-4 py-3 bg-surface-container-high border border-teal/40 rounded-xl font-mono text-teal text-sm w-full font-semibold animate-pulse"
+              id="bindStatusBadge"
+            >
+              Đang chờ bấm phím...
+            </div>
+            <div class="flex gap-3 w-full mt-2">
+              <button
+                class="flex-1 py-2 px-4 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-xs font-semibold transition-colors"
+                onclick="clearCurrentBind()"
+              >
+                Xóa phím gán
+              </button>
+              <button
+                class="flex-1 py-2 px-4 rounded-lg bg-surface-container-highest hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors"
+                onclick="closeKeyBindModal()"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div
+          class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4"
+          id="deleteModal"
+        >
+          <div
+            class="bg-surface-container border border-outline/40 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center flex flex-col items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 bg-red-500/15 text-red-400 border border-red-500/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-2xl">delete_forever</span>
+            </div>
+            <h3 class="text-lg font-bold text-on-background">Xóa Combo?</h3>
+            <p class="text-sm text-on-surface-variant" id="deleteModalText">
+              Bạn có chắc muốn xóa combo này?
+            </p>
+            <div class="flex gap-3 w-full mt-2">
+              <button
+                class="flex-1 py-2.5 px-4 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/40 text-sm font-semibold transition-colors"
+                type="button"
+                onclick="confirmDeleteCombo()"
+              >
+                Xóa
+              </button>
+              <button
+                class="flex-1 py-2.5 px-4 rounded-lg bg-surface-container-highest hover:bg-surface-container-high text-on-surface text-sm font-semibold transition-colors"
+                type="button"
+                onclick="closeDeleteModal()"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Combo Iframe Modal -->
+        <div
+          class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4 md:p-6"
+          id="comboModal"
+        >
+          <div
+            class="bg-surface-container border border-outline/40 rounded-2xl w-full max-w-5xl h-[88vh] flex flex-col shadow-2xl overflow-hidden relative"
+          >
+            <div
+              class="flex items-center justify-between px-6 py-3.5 border-b border-outline/30 bg-surface-container-high"
+            >
+              <div class="flex items-center gap-2 text-teal font-bold text-base">
+                <span class="material-symbols-outlined">tune</span>
+                <span>Tùy chỉnh Combo (Custom Combo)</span>
+              </div>
+              <button
+                class="w-8 h-8 rounded-lg bg-surface-container-highest hover:bg-red-500/20 hover:text-red-400 text-on-surface-variant flex items-center justify-center transition-colors"
+                onclick="closeComboModal()"
+              >
+                <span class="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+            <iframe
+              class="w-full flex-1 border-0"
+              id="comboIframe"
+              src="about:blank"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: TÙY CHỈNH ==================== -->
+      <section id="view-settings" class="hidden w-full p-6 md:p-8 max-w-7xl min-h-screen">
+        <!-- Header Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <div class="flex items-center gap-2 text-teal font-medium text-sm mb-1">
+              <span class="material-symbols-outlined text-base">tune</span>
+              <span>Cấu hình Game & Unlocker</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl text-on-background font-bold tracking-tight">
+              Tùy chỉnh
+            </h2>
+          </div>
+          <div class="flex items-center gap-3 self-start sm:self-auto">
+            <button
+              id="saveUnlockerBtn"
+              class="px-5 py-2.5 rounded-xl bg-teal text-black font-bold hover:bg-teal/90 transition-all shadow-lg shadow-teal/20 hover:shadow-teal/30 text-sm flex items-center gap-2 cursor-pointer active:scale-[0.98]"
+            >
+              <span class="material-symbols-outlined text-lg">save</span>
+              <span id="saveBtnLabel">Lưu cấu hình</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Config Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+          <!-- 1. Vsync -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">sync</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Tắt VSync
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_Vsync" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 2. ShowFPS -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">speed</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Hiển thị FPS (Show FPS)
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_ShowFPS" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 3. FpsUnlock -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">speed</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Mở khóa FPS
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_FpsUnlock" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 4. TargetFps -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 group flex flex-col justify-center">
+            <div class="flex items-center justify-between gap-4 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined">monitor</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                    FPS mục tiêu (Target FPS)
+                  </h3>
+                </div>
+              </div>
+              <input
+                type="number"
+                id="cfg_TargetFps"
+                min="30"
+                max="1000"
+                value="120"
+                class="w-20 bg-surface-container-high border border-outline/40 rounded-lg px-2.5 py-1.5 text-teal font-bold text-center text-sm focus:border-teal focus:outline-none transition-colors"
+              />
+            </div>
+            <div class="pt-2 px-1">
+              <input
+                type="range"
+                id="range_TargetFps"
+                min="30"
+                max="1000"
+                step="1"
+                value="120"
+                class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-teal"
+              />
+            </div>
+          </div>
+
+          <!-- 5. FovUnlock -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">center_focus_strong</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Mở khóa FOV (Góc nhìn)
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_FovUnlock" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 6. FovValue -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 group flex flex-col justify-center">
+            <div class="flex items-center justify-between gap-4 mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined">zoom_in</span>
+                </div>
+                <div>
+                  <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                    Giá trị FOV (FovValue)
+                  </h3>
+                </div>
+              </div>
+              <input
+                type="number"
+                id="cfg_FovValue"
+                min="30"
+                max="150"
+                value="60"
+                class="w-20 bg-surface-container-high border border-outline/40 rounded-lg px-2.5 py-1.5 text-teal font-bold text-center text-sm focus:border-teal focus:outline-none transition-colors"
+              />
+            </div>
+            <div class="pt-2 px-1">
+              <input
+                type="range"
+                id="range_FovValue"
+                min="30"
+                max="150"
+                step="1"
+                value="60"
+                class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-teal"
+              />
+            </div>
+          </div>
+
+          <!-- 7. RemoveTeamAnim -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">groups</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Đổi nhân vật nhanh
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_RemoveTeamAnim" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 8. DisableCameraMove -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">videocam_off</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Bỏ zoom khi dùng nộ
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_DisableCameraMove" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 9. DisableFog -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">cloud_off</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Tắt sương mù (Disable Fog)
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_DisableFog" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 10. HideUID -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">visibility_off</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Ẩn UID (Hide UID)
+                </h3>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_HideUID" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 11. EnableNetworkToggle -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">wifi_off</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Bật/Tắt ngắt mạng
+                </h3>
+                <p class="text-xs text-on-surface-variant">ToggleNetwork</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1 select-none">
+              <input type="checkbox" id="cfg_EnableNetworkToggle" class="sr-only peer">
+              <div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface-variant after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal peer-checked:after:bg-black peer-checked:after:border-teal shadow-inner"></div>
+            </label>
+          </div>
+
+          <!-- 12. NetworkToggleKey -->
+          <div class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 h-[104px] shadow-lg transition-colors duration-200 flex items-center justify-between gap-4 group">
+            <div class="flex gap-4 items-center">
+              <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">keyboard</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base group-hover:text-teal transition-colors">
+                  Phím tắt ngắt mạng
+                </h3>
+                <p class="text-xs text-on-surface-variant">NetworkToggleKey</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                id="btn_NetworkToggleKey"
+                class="px-3.5 py-2 rounded-xl bg-surface-container-high hover:bg-surface-container-highest border border-teal/40 hover:border-teal text-teal font-mono font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all shadow-sm active:scale-[0.98] cursor-pointer"
+                title="Nhấn để đổi phím tắt ngắt mạng"
+              >
+                <span class="material-symbols-outlined text-base">tune</span>
+                <span id="label_NetworkToggleKey">F11 (122)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Long Bar: Game Executable Path -->
+        <div class="mt-6 bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-2xl p-5 shadow-lg transition-colors duration-200">
+          <div class="flex items-center justify-between gap-4 mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined">sports_esports</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-on-background text-base">
+                  Đường dẫn file Game (GenshinImpact.exe)
+                </h3>
+              </div>
+            </div>
+            <span id="gamePathStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              File sẵn sàng
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
+            <div class="relative w-full">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">folder_open</span>
+              <input
+                type="text"
+                id="cfg_GamePath"
+                placeholder="C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe"
+                class="w-full bg-surface-container-high border border-outline/40 rounded-xl pl-10 pr-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/40 text-sm focus:border-teal focus:outline-none transition-colors"
+              />
+            </div>
+            <input type="file" id="gamePathFileInput" accept=".exe" class="hidden" />
+            <button
+              type="button"
+              id="browseGamePathBtn"
+              class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-teal/40 bg-teal/10 hover:bg-teal/20 text-teal text-sm font-semibold transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer active:scale-[0.98]"
+            >
+              <span class="material-symbols-outlined text-lg">file_open</span>
+              <span>Duyệt file...</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Key Binding Modal for NetworkToggleKey -->
+        <div
+          class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4"
+          id="networkKeyBindModal"
+        >
+          <div
+            class="bg-surface-container border border-outline/40 rounded-2xl p-6 w-full max-w-md shadow-2xl text-center flex flex-col items-center gap-4"
+          >
+            <div
+              class="w-12 h-12 bg-teal/15 text-teal border border-teal/30 rounded-xl flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-2xl">wifi_off</span>
+            </div>
+            <h3 class="text-lg font-bold text-on-background">
+              Gán phím tắt Ngắt mạng (ToggleNetwork)
+            </h3>
+            <p class="text-sm text-on-surface-variant">
+              Nhấn phím bất kỳ trên bàn phím hoặc nút chuột để gán.<br />
+              <span class="text-xs text-teal/80">Nhấn <kbd class="px-1.5 py-0.5 bg-surface-container-high border border-outline/40 rounded font-mono">ESC</kbd> để hủy</span>
+            </p>
+
+            <div
+              class="px-4 py-3 bg-surface-container-high border border-teal/40 rounded-xl font-mono text-teal text-sm w-full font-semibold animate-pulse flex items-center justify-center gap-2"
+              id="networkBindStatusBadge"
+            >
+              <span class="material-symbols-outlined text-base">radio_button_checked</span>
+              <span id="networkBindStatusText">Đang chờ bấm phím hoặc click chuột...</span>
+            </div>
+
+            <!-- Chọn nhanh từ danh sách KEYMAP -->
+            <div class="w-full text-left pt-1">
+              <label for="quickKeySelect" class="text-xs text-on-surface-variant block mb-1.5 font-medium">Hoặc chọn nhanh từ danh sách:</label>
+              <select id="quickKeySelect" class="w-full bg-surface-container-high border border-outline/40 rounded-xl px-3 py-2 text-sm text-on-surface focus:border-teal focus:outline-none transition-colors cursor-pointer">
+              </select>
+            </div>
+
+            <div class="flex gap-3 w-full mt-2">
+              <button
+                type="button"
+                class="flex-1 py-2 px-4 rounded-lg bg-teal/15 hover:bg-teal/25 text-teal border border-teal/30 text-xs font-semibold transition-colors cursor-pointer"
+                id="resetDefaultNetworkKeyBtn"
+              >
+                Mặc định (F11)
+              </button>
+              <button
+                type="button"
+                class="flex-1 py-2 px-4 rounded-lg bg-surface-container-highest hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-colors cursor-pointer"
+                id="closeNetworkKeyBindBtn"
+              >
+                Đóng / Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+
     <!-- External JavaScript -->
     <script src="shared.js"></script>
     <script src="db.js"></script>
+    <script src="cb.js"></script>
+    <script src="cus.js"></script>
   </body>
 </html>

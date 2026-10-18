@@ -136,10 +136,10 @@ def get_unlocker_config_path():
 _UNLOCKER_DEFAULTS = {
     "File": "CUTTOOL.UnlockerIsland.dll",
     "GamePath": r"C:\Program Files\HoYoPlay\games\Genshin Impact game\GenshinImpact.exe",
-    "Vsync": 0, "FpsUnlock": 1, "TargetFps": 240,
-    "FovUnlock": 1, "FovValue": 60, "HideUID": 0,
-    "DisableCameraMove": 1, "DisableFog": 1,
-    "RemoveTeamAnim": 1, "DisableBurstBlackscreen": 1, "ShowFPS": 0,
+    "Vsync": 0, "FpsUnlock": 0, "TargetFps": 120,
+    "FovUnlock": 0, "FovValue": 60, "HideUID": 0,
+    "DisableCameraMove": 0, "DisableFog": 0,
+    "RemoveTeamAnim": 0, "DisableBurstBlackscreen": 0, "ShowFPS": 0,
     "BlockNetwork": 0, "EnableNetworkToggle": 0,
     "NetworkToggleKey": 122, "ToggleKey": 36,
 }
