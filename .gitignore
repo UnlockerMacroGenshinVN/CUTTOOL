@@ -21,3 +21,8 @@ dist/
 node_modules/
 
 unlocker/
+
+# Direnv & Logs
+.direnv/
+*.log
+
