@@ -1,8 +1,5 @@
 {
-  "FPS": 60,
-  "comboSignKeys": {
-    "Arlec hex vape c0/1 60f": "mouse_4",
-    "Arlec melt c0/1 60f": "mouse_5"
-  },
+  "comboSignKeys": {},
+  "FPS": 120,
   "customCombos": []
 }

@@ -148,8 +148,6 @@ const KEYMAP_GROUPS = [
     }
 ];
 
-let currentConfig = {};
-
 function formatVKCode(code) {
     const num = parseInt(code, 10);
     if (isNaN(num)) return "F11 (122)";
@@ -235,7 +233,8 @@ function initQuickKeySelect() {
 }
 
 function setNetworkToggleKey(vkCode) {
-    currentConfig.NetworkToggleKey = vkCode;
+    if (!window.sharedUnlockerConfig) window.sharedUnlockerConfig = {};
+    window.sharedUnlockerConfig.NetworkToggleKey = vkCode;
     const label = document.getElementById('label_NetworkToggleKey');
     if (label) {
         label.textContent = formatVKCode(vkCode);
@@ -253,7 +252,8 @@ function openNetworkKeyBindModal() {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    const currentKey = currentConfig.NetworkToggleKey !== undefined ? currentConfig.NetworkToggleKey : 122;
+    const cfg = window.sharedUnlockerConfig || {};
+    const currentKey = cfg.NetworkToggleKey !== undefined ? cfg.NetworkToggleKey : 122;
     const select = document.getElementById('quickKeySelect');
     if (select) select.value = currentKey;
 
@@ -293,7 +293,6 @@ function startNetworkKeyCapture() {
     };
 
     networkMouseHandler = (e) => {
-        // Cho phép bấm các nút tương tác bên trong modal
         if (e.target.closest('#closeNetworkKeyBindBtn, #resetDefaultNetworkKeyBtn, #quickKeySelect')) {
             return;
         }
@@ -324,33 +323,15 @@ function stopNetworkKeyCapture() {
     }
 }
 
-// ── Tải và hiển thị cấu hình Unlocker ───────────────────────────────────────
-async function fetchUnlockerConfig() {
-    try {
-        if (window.unlockerNative && typeof window.unlockerNative.getConfig === 'function') {
-            currentConfig = await window.unlockerNative.getConfig();
-            updateUIFromConfig();
-            return;
-        }
-        const res = await fetch(API_UNLOCKER);
-        if (res.ok) {
-            currentConfig = await res.json();
-            updateUIFromConfig();
-        } else {
-            showToast('Không thể kết nối tới file config.ini!', true);
-        }
-    } catch (err) {
-        console.error('Không thể tải cấu hình unlocker:', err);
-        showToast('Lỗi khi kết nối tới backend Unlocker!', true);
-    }
-}
-
+// ── Hiển thị cấu hình Unlocker lên giao diện Tùy chỉnh ──────────────────────
 function updateUIFromConfig() {
+    const cfg = window.sharedUnlockerConfig || {};
+
     // Booleans
     configKeys.boolean.forEach(key => {
         const el = document.getElementById(`cfg_${key}`);
         if (el) {
-            const rawVal = currentConfig[key] !== undefined ? currentConfig[key] : (currentConfig[aliasMap(key)] !== undefined ? currentConfig[aliasMap(key)] : 0);
+            const rawVal = cfg[key] !== undefined ? cfg[key] : (cfg[aliasMap(key)] !== undefined ? cfg[aliasMap(key)] : 0);
             const val = rawVal === 1 || rawVal === true || rawVal === '1';
             el.checked = val;
         }
@@ -359,7 +340,7 @@ function updateUIFromConfig() {
     // Ints
     configKeys.int.forEach(key => {
         if (key === 'NetworkToggleKey') {
-            const netKey = currentConfig.NetworkToggleKey !== undefined ? parseInt(currentConfig.NetworkToggleKey, 10) : 122;
+            const netKey = cfg.NetworkToggleKey !== undefined ? parseInt(cfg.NetworkToggleKey, 10) : 122;
             const label = document.getElementById('label_NetworkToggleKey');
             if (label) {
                 label.textContent = formatVKCode(netKey);
@@ -373,8 +354,8 @@ function updateUIFromConfig() {
 
         const inputNum = document.getElementById(`cfg_${key}`);
         const inputRange = document.getElementById(`range_${key}`);
-        const defaultVal = (key === 'TargetFps' ? 240 : 60);
-        const val = currentConfig[key] !== undefined ? parseInt(currentConfig[key], 10) : defaultVal;
+        const defaultVal = (key === 'TargetFps' ? 120 : 60);
+        const val = cfg[key] !== undefined ? parseInt(cfg[key], 10) : defaultVal;
         if (inputNum) inputNum.value = val;
         if (inputRange) inputRange.value = val;
     });
@@ -382,18 +363,20 @@ function updateUIFromConfig() {
     // GamePath
     const gamePathInput = document.getElementById('cfg_GamePath');
     if (gamePathInput) {
-        gamePathInput.value = currentConfig.GamePath || '';
+        gamePathInput.value = cfg.GamePath || '';
         updateGamePathBadge(gamePathInput.value);
     }
 }
 
 function aliasMap(key) {
     if (key === 'DisableBurstBlackscreen') return 'DisableBurstBackscreen';
+    if (key === 'ShowFPS') return 'ShowFps';
+    if (key === 'Vsync') return 'VSync';
     return key;
 }
 
 function getUIConfig() {
-    const data = { ...currentConfig };
+    const data = { ...(window.sharedUnlockerConfig || {}) };
 
     // Booleans
     configKeys.boolean.forEach(key => {
@@ -411,13 +394,13 @@ function getUIConfig() {
     // Ints
     configKeys.int.forEach(key => {
         if (key === 'NetworkToggleKey') {
-            data.NetworkToggleKey = parseInt(currentConfig.NetworkToggleKey, 10) || 122;
+            data.NetworkToggleKey = parseInt((window.sharedUnlockerConfig || {}).NetworkToggleKey, 10) || 122;
             return;
         }
 
         const el = document.getElementById(`cfg_${key}`);
         if (el) {
-            data[key] = parseInt(el.value, 10) || (key === 'TargetFps' ? 240 : 60);
+            data[key] = parseInt(el.value, 10) || (key === 'TargetFps' ? 120 : 60);
         }
     });
 
@@ -440,10 +423,14 @@ async function saveUnlockerConfig() {
     }
 
     const payload = getUIConfig();
+    window.sharedUnlockerConfig = payload;
+    if (typeof syncDbUnlockerInputsFromMemory === 'function') {
+        syncDbUnlockerInputsFromMemory();
+    }
+
     try {
         if (window.unlockerNative && typeof window.unlockerNative.saveConfig === 'function') {
             await window.unlockerNative.saveConfig(payload);
-            currentConfig = payload;
             showToast('Đã lưu cấu hình config.ini thành công!');
         } else {
             const res = await fetch(API_UNLOCKER, {
@@ -452,7 +439,6 @@ async function saveUnlockerConfig() {
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                currentConfig = payload;
                 showToast('Đã lưu cấu hình config.ini thành công!');
             } else {
                 showToast('Lỗi khi lưu cấu hình config.ini!', true);
@@ -467,21 +453,6 @@ async function saveUnlockerConfig() {
             btn.classList.remove('opacity-75', 'cursor-wait');
             if (label) label.textContent = 'Lưu cấu hình';
         }
-    }
-}
-
-function updateGamePathBadge(path) {
-    const badge = document.getElementById('gamePathStatusBadge');
-    if (!badge) return;
-    if (path && (path.toLowerCase().endsWith('genshinimpact.exe') || path.toLowerCase().endsWith('.exe'))) {
-        badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0';
-        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>File sẵn sàng';
-    } else if (path) {
-        badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0';
-        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>Đường dẫn đã nhập';
-    } else {
-        badge.className = 'hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0';
-        badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>Chưa chọn file';
     }
 }
 
@@ -500,12 +471,9 @@ function setupBrowseGamePath() {
         browseBtn.addEventListener('click', async () => {
             let selectedPath = null;
 
-            // 1. Dùng IPC Native của Electron để bật file explorer dialog
             if (window.unlockerNative && typeof window.unlockerNative.selectGamePath === 'function') {
                 selectedPath = await window.unlockerNative.selectGamePath();
-            } 
-            // 2. Tùy chọn gọi backend Python qua HTTP
-            else {
+            } else {
                 try {
                     const res = await fetch('http://localhost:5000/browse-game-path', { method: 'POST' });
                     if (res.ok) {
@@ -519,7 +487,6 @@ function setupBrowseGamePath() {
                 }
             }
 
-            // 3. Fallback dùng html input file nếu không chọn qua 1 & 2
             if (!selectedPath && fileInput) {
                 fileInput.click();
                 return;
@@ -527,7 +494,8 @@ function setupBrowseGamePath() {
 
             if (selectedPath) {
                 if (gamePathInput) gamePathInput.value = selectedPath;
-                currentConfig.GamePath = selectedPath;
+                if (!window.sharedUnlockerConfig) window.sharedUnlockerConfig = {};
+                window.sharedUnlockerConfig.GamePath = selectedPath;
                 updateGamePathBadge(selectedPath);
                 saveUnlockerConfig();
             }
@@ -541,7 +509,8 @@ function setupBrowseGamePath() {
                 const selectedPath = file.path || file.name;
                 if (selectedPath) {
                     if (gamePathInput) gamePathInput.value = selectedPath;
-                    currentConfig.GamePath = selectedPath;
+                    if (!window.sharedUnlockerConfig) window.sharedUnlockerConfig = {};
+                    window.sharedUnlockerConfig.GamePath = selectedPath;
                     updateGamePathBadge(selectedPath);
                     saveUnlockerConfig();
                 }
@@ -555,17 +524,18 @@ function showToast(message, isError = false) {
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'toastNotification';
-        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-3 backdrop-blur-md border';
+        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-200 transform translate-y-10 opacity-0 flex items-center gap-3 border';
         document.body.appendChild(toast);
     }
     if (isError) {
-        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-3 backdrop-blur-md border border-rose-500/50 bg-rose-950/90 text-rose-200';
+        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-200 transform translate-y-0 opacity-100 flex items-center gap-3 border border-rose-500/50 bg-rose-950/95 text-rose-200';
         toast.innerHTML = `<span class="material-symbols-outlined text-rose-400">error</span><span class="font-medium text-sm">${message}</span>`;
     } else {
-        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-3 backdrop-blur-md border border-teal/50 bg-teal-deep/90 text-teal-100';
+        toast.className = 'fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl transition-all duration-200 transform translate-y-0 opacity-100 flex items-center gap-3 border border-teal/50 bg-teal-deep/95 text-teal-100';
         toast.innerHTML = `<span class="material-symbols-outlined text-teal-300">check_circle</span><span class="font-medium text-sm">${message}</span>`;
     }
-    setTimeout(() => {
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
         toast.className = toast.className.replace('translate-y-0 opacity-100', 'translate-y-10 opacity-0');
     }, 3000);
 }
@@ -590,19 +560,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initQuickKeySelect();
     setupSyncInputs();
     setupBrowseGamePath();
-    fetchUnlockerConfig();
 
     const saveBtn = document.getElementById('saveUnlockerBtn');
     if (saveBtn) {
         saveBtn.addEventListener('click', saveUnlockerConfig);
-    }
-
-    const resetBtn = document.getElementById('resetUnlockerBtn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            updateUIFromConfig();
-            showToast('Đã khôi phục cài đặt mặc định/hiện tại!');
-        });
     }
 
     const netKeyBtn = document.getElementById('btn_NetworkToggleKey');

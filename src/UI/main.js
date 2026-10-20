@@ -265,6 +265,7 @@ async function createWindow() {
     mainWin = new BrowserWindow({
         width: 1280,
         height: 768,
+        backgroundColor: '#090d16',
         show: false,   // ẩn cho đến khi backend sẵn sàng
         webPreferences: {
             nodeIntegration: false,
