@@ -21,6 +21,8 @@ from .macros import (
     skk3aw, skk3as, skk2as, skk2a,
     skk2az, skk2azs, skk2azs_slow,
     skk5as, skk5a, skk2aq, skke,
+    arlec_hex_vape_c0_c1_60f,
+    arlec_melt_60f,
 )
 from .config_io import log_debug
 from .evdev_io  import parse_key_str, format_key_code
@@ -170,25 +172,44 @@ COMBO_MAP = {
     "C0:  Combo Skirk C0 EQA 120fps": skkC0_EQA_120f,
     "C0:  Combo Skirk C0 EA 120fps":  skkC0_QEA_120f,
     "C0:  Combo Skirk C0 EQA 60fps":  skkC0_EQA_60f,
+    "Arlec hex vape c0/1 60f":        arlec_hex_vape_c0_c1_60f,
+    "Arlec melt c0/1 60f":            arlec_melt_60f,
+    # Alias tên cũ
+    "Arlec: Hex Vape C0-C1 60fps":    arlec_hex_vape_c0_c1_60f,
+    "Arlec_melt_60f":                 arlec_melt_60f,
 }
 
 STEP_MAP = {
-    "skk3aw":       skk3aw,
-    "skk2as":       skk2as,
-    "skk2a":        skk2a,
-    "skk3as":       skk3as,
-    "skk2az":       skk2az,
-    "skk2azs":      skk2azs,
-    "skk2azs_slow": skk2azs_slow,
-    "skk2aq":       skk2aq,
-    "skke":         skke,
-    "skk5as":       skk5as,
-    "skk5a":        skk5a,
+    "skk3aw":                   skk3aw,
+    "skk2as":                   skk2as,
+    "skk2a":                    skk2a,
+    "skk3as":                   skk3as,
+    "skk2az":                   skk2az,
+    "skk2azs":                  skk2azs,
+    "skk2azs_slow":             skk2azs_slow,
+    "skk2aq":                   skk2aq,
+    "skke":                     skke,
+    "skk5as":                   skk5as,
+    "skk5a":                    skk5a,
+    "arlec_hex_vape_c0_c1_60f": arlec_hex_vape_c0_c1_60f,
+    "arlec_melt_60f":           arlec_melt_60f,
 }
 
 # ── Chuỗi steps của built-in combos (để hiển thị trên CLI) ───────────────────
 
 BUILTIN_SEQUENCES = {
+    "Arlec hex vape c0/1 60f": [
+        "arlec_hex_vape_c0_c1_60f"
+    ],
+    "Arlec melt c0/1 60f": [
+        "arlec_melt_60f"
+    ],
+    "Arlec_melt_60f": [
+        "arlec_melt_60f"
+    ],
+    "Arlec: Hex Vape C0-C1 60fps": [
+        "arlec_hex_vape_c0_c1_60f"
+    ],
     "C0:  Combo Skirk C0 EQA 120fps": [
         "skke", "is_no_key_pressed",
         "skk2as", "is_no_key_pressed",

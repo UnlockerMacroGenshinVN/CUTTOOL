@@ -11,7 +11,19 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def _get_base_dir():
+    if os.path.exists("config.json"):
+        return os.path.abspath(".")
+    if os.path.exists("src-linux/config.json"):
+        return os.path.abspath("src-linux")
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(os.path.abspath(sys.executable))
+        if os.path.exists(os.path.join(exe_dir, "config.json")):
+            return exe_dir
+        return os.path.abspath(".")
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+_BASE_DIR = _get_base_dir()
 
 CONFIG_PATH    = os.path.join(_BASE_DIR, "config.json")
 DEBUG_LOG_PATH = os.path.join(_BASE_DIR, "debug.log")
@@ -57,8 +69,10 @@ def log_debug(msg):
 
 # ── Config JSON ───────────────────────────────────────────────────────────────
 DEFAULT_CONFIG = {
-    "FPS": 120,
-    "comboSignKeys": {},
+    "FPS": 60,
+    "comboSignKeys": {
+        "Arlec hex vape c0/1 60f": "mouse_4"
+    },
     "customCombos": [],
 }
 
