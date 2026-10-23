@@ -13,7 +13,10 @@ try {
 const BUILTIN_COMBOS = [
     "C0:  Combo Skirk C0 EQA 120fps",
     "C0:  Combo Skirk C0 EA 120fps",
-    "C0:  Combo Skirk C0 EQA 60fps"
+    "C0:  Combo Skirk C0 EQA 60fps",
+    "C0:  Combo Mavuika CDCDCF (Full Combo)",
+    // Lay tu GI-Macro-Manager (github.com/3azf55/GI-Macro-Manager, MIT)
+    "C0:  Combo Arlecchino Overload N2W (GI)"
 ];
 
 function formatKey(key) {
@@ -219,11 +222,30 @@ async function handleLaunchGame() {
     _notify(result.message || 'Khởi động game thành công!');
 }
 
+// ── Đồng bộ trạng thái RUN xuống backend ─────────────────────────────────────
+async function syncRunStateToBackend(active, retries = 20, delayMs = 500) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const res = await fetch('http://localhost:5000/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enabled: active })
+            });
+            if (res.ok) {
+                if (typeof checkMacroStatus === 'function') checkMacroStatus();
+                return true;
+            }
+        } catch {}
+        await new Promise((r) => setTimeout(r, delayMs));
+    }
+    return false;
+}
+
 // ── Frontend Heartbeat ─────────────────────────────────────────────────
 let _heartbeatInFlight = false;
 function startFrontendHeartbeat() {
     const sendPing = () => {
-        if (document.hidden || _heartbeatInFlight) return;
+        if (_heartbeatInFlight) return;
         _heartbeatInFlight = true;
         fetch('http://localhost:5000/heartbeat', { method: 'POST' })
             .catch(() => {})
@@ -238,8 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const runBtn   = document.getElementById('runBtn');
     const startBtn = document.getElementById('startBtn');
 
-    applyRunState(getRunActive());
+    const runActive = getRunActive();
+    applyRunState(runActive);
     applyStartState();
+    syncRunStateToBackend(runActive);
 
     if (runBtn)   runBtn.addEventListener('click', toggleRun);
     if (startBtn) startBtn.addEventListener('click', handleLaunchGame);

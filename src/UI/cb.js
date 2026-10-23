@@ -348,7 +348,13 @@ function openComboModal(editId) {
     if (!modal || !iframe) return;
     let src = "cuscombo.html";
     if (editId) {
-        src += `?edit=${editId}`;
+        const cfg = window.sharedMacroConfig || {};
+        const combo = (cfg.customCombos || []).find((c) => c.id === editId);
+        const isAdvancedCombo = combo && (
+            Array.isArray(combo.clips) ||
+            (Array.isArray(combo.timeline) && combo.timeline.some((s) => s && typeof s === "object"))
+        );
+        src = `${isAdvancedCombo ? "cuscombo-advanced.html" : "cuscombo.html"}?edit=${editId}`;
     }
     iframe.src = src;
     modal.classList.remove("hidden");

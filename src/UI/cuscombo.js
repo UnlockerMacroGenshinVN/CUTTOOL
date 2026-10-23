@@ -62,7 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
         clearHotkey: document.getElementById("clearHotkey"),
         pythonPreview: document.getElementById("pythonPreview"),
         saveButton: document.getElementById("saveCombo"),
+        ioModalButton: document.getElementById("ioModalButton"),
         newComboButton: document.getElementById("newComboButton"),
+        advancedModeButton: document.getElementById("advancedModeButton"),
         savedCount: document.getElementById("savedCount"),
         saveStatus: document.getElementById("saveStatus")
     });
@@ -73,9 +75,29 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSavedCount();
     bindEvents();
 
-    // ── Edit mode: load combo from config if URL has ?edit=<id> ──
+    // ── Restore draft when switching modes or load combo from config if URL has ?edit=<id> ──
+    let restoredDraft = false;
+    try {
+        const rawDraft = sessionStorage.getItem("cuscombo_draft");
+        if (rawDraft) {
+            sessionStorage.removeItem("cuscombo_draft");
+            const draft = JSON.parse(rawDraft);
+            if (draft && typeof draft === "object") {
+                state.comboId = draft.comboId || state.comboId;
+                state.hotkey = draft.hotkey || null;
+                state.timeline = Array.isArray(draft.timeline)
+                    ? draft.timeline.filter((fn) => typeof fn === "string" && ACTION_BY_FUNCTION.has(fn))
+                    : [];
+                elements.comboName.value = draft.name || "";
+                updateHotkeyUI();
+                renderTimeline();
+                restoredDraft = true;
+            }
+        }
+    } catch {}
+
     const editId = new URLSearchParams(window.location.search).get("edit");
-    if (editId) {
+    if (!restoredDraft && editId) {
         loadComboForEdit(editId);
     }
 });
@@ -89,6 +111,12 @@ function bindEvents() {
     elements.hotkeyCapture.addEventListener("click", startHotkeyCapture);
     elements.clearHotkey.addEventListener("click", clearHotkey);
     elements.newComboButton.addEventListener("click", createNewCombo);
+    if (elements.ioModalButton) {
+        elements.ioModalButton.addEventListener("click", () => openAdvancedMode(true));
+    }
+    if (elements.advancedModeButton) {
+        elements.advancedModeButton.addEventListener("click", () => openAdvancedMode(false));
+    }
     elements.saveButton.addEventListener("click", saveCombo);
 
     window.addEventListener("keydown", (event) => {
@@ -531,6 +559,24 @@ function createNewCombo() {
     elements.comboName.focus();
 }
 
+function openAdvancedMode(openIoModal = false) {
+    const name = elements.comboName ? elements.comboName.value.trim() : "";
+    if (name || state.hotkey || state.timeline.length > 0 || openIoModal) {
+        try {
+            sessionStorage.setItem("cuscombo_draft", JSON.stringify({
+                comboId: state.comboId,
+                name,
+                hotkey: state.hotkey,
+                timeline: [...state.timeline],
+                openIoModal: Boolean(openIoModal)
+            }));
+        } catch {}
+    } else {
+        try { sessionStorage.removeItem("cuscombo_draft"); } catch {}
+    }
+    window.location.href = `cuscombo-advanced.html${window.location.search}`;
+}
+
 function loadCustomCombos() {
     const stored = loadJsonStorage(CUSTOM_COMBOS_STORAGE, []);
     return Array.isArray(stored) ? stored : [];
@@ -583,6 +629,11 @@ async function loadComboForEdit(id) {
     const combo = combos.find(c => c.id === id);
     if (!combo) {
         showStatus("Không tìm thấy combo để chỉnh sửa.", "error");
+        return;
+    }
+
+    if (Array.isArray(combo.clips) || (Array.isArray(combo.timeline) && combo.timeline.some(s => s && typeof s === "object"))) {
+        window.location.replace(`cuscombo-advanced.html?edit=${encodeURIComponent(id)}`);
         return;
     }
 

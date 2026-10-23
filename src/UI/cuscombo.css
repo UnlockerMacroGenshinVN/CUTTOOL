@@ -68,6 +68,25 @@ input:focus-visible,
     margin-bottom: 24px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.advanced-button {
+    border-color: rgba(45, 212, 191, 0.45);
+    color: var(--teal);
+    background: rgba(45, 212, 191, 0.12);
+}
+
+.advanced-button:hover {
+    border-color: var(--teal);
+    background: rgba(45, 212, 191, 0.22);
+    box-shadow: 0 8px 20px rgba(45, 212, 191, 0.18);
+}
+
 .eyebrow,
 .section-kicker {
     margin: 0;

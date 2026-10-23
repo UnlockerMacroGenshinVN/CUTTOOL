@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, shell } = require('electron');
+const { app, BrowserWindow, dialog, shell, Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -18,6 +18,9 @@ app.commandLine.appendSwitch('enable-features', 'VaapiVideoDecoder');
 
 let pyProc = null;
 let mainWin = null;
+let tray = null;
+let isQuitting = false;
+let backendStarted = false;
 
 // ── Debug log file ────────────────────────────────────────────────────────────
 const LOG_DIR  = app.getPath('userData');
@@ -33,6 +36,86 @@ function logE(msg) {
     console.log(line.trim());
     try { fs.appendFileSync(LOG_FILE, line, 'utf8'); } catch {}
 }
+
+// ── Single Instance Lock (Chống mở trùng & tự động hiện cửa sổ đang chạy) ────
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+
+if (!gotSingleInstanceLock) {
+    ensureLogDir();
+    logE('Đã có phiên bản ứng dụng đang chạy. Tự động chuyển sang cửa sổ đang chạy và thoát phiên bản mới.');
+    app.exit(0);
+}
+
+function getAppIconPath() {
+    const rootIcon = path.join(__dirname, 'icon.png');
+    if (fs.existsSync(rootIcon)) return rootIcon;
+    const assetsIcon = path.join(__dirname, 'assets', 'icon.png');
+    if (fs.existsSync(assetsIcon)) return assetsIcon;
+    return rootIcon;
+}
+
+function showMainWindow() {
+    if (!mainWin || mainWin.isDestroyed()) return;
+    if (mainWin.isMinimized()) {
+        mainWin.restore();
+    }
+    if (!mainWin.isVisible()) {
+        mainWin.show();
+    }
+    mainWin.focus();
+    if (typeof mainWin.moveTop === 'function') {
+        try { mainWin.moveTop(); } catch {}
+    }
+}
+
+function createTray() {
+    if (tray) return;
+    try {
+        const iconPath = getAppIconPath();
+        const trayIcon = nativeImage.createFromPath(iconPath);
+        tray = new Tray(trayIcon);
+        tray.setToolTip('Cryss - Cứt tool');
+
+        const contextMenu = Menu.buildFromTemplate([
+            {
+                label: 'Mở ứng dụng',
+                click: () => showMainWindow()
+            },
+            { type: 'separator' },
+            {
+                label: 'Thoát hoàn toàn',
+                click: async () => {
+                    isQuitting = true;
+                    if (tray) {
+                        try { tray.destroy(); } catch {}
+                        tray = null;
+                    }
+                    await stopPython();
+                    app.quit();
+                }
+            }
+        ]);
+
+        tray.setContextMenu(contextMenu);
+
+        tray.on('click', () => {
+            showMainWindow();
+        });
+
+        tray.on('double-click', () => {
+            showMainWindow();
+        });
+
+        logE(`Đã khởi tạo System Tray icon thành công (${iconPath})`);
+    } catch (err) {
+        logE(`Lỗi khởi tạo System Tray: ${err.message}`);
+    }
+}
+
+app.on('second-instance', () => {
+    logE('Phát hiện người dùng mở thêm ứng dụng → Hiện cửa sổ đang chạy');
+    showMainWindow();
+});
 
 // ── Kiểm tra backend sẵn sàng (poll /config) ─────────────────────────────────
 // Tăng timeout 30s → 45s cho máy Win10 chậm khởi động lâu hơn
@@ -100,6 +183,7 @@ function startPython() {
     // Đặt CRYSS_DEBUG_LOG=1 để backend ghi debug.log
     const env = Object.assign({}, process.env, { CRYSS_DEBUG_LOG: '1' });
 
+    backendStarted = true;
     pyProc = spawn(pyPath, args, {
         stdio: ['ignore', 'pipe', 'pipe'],   // capture stdout/stderr để log
         windowsHide: true,
@@ -122,6 +206,11 @@ function startPython() {
 }
 
 function stopPython() {
+    if (!backendStarted) {
+        return Promise.resolve();
+    }
+    backendStarted = false;
+
     // 1. Gửi POST /shutdown để Python tự thoát (xử lý cả trường hợp admin re-launch)
     return new Promise((resolve) => {
         const req = http.request({
@@ -266,6 +355,7 @@ async function createWindow() {
         width: 1280,
         height: 768,
         backgroundColor: '#090d16',
+        icon: getAppIconPath(),
         show: false,   // ẩn cho đến khi backend sẵn sàng
         webPreferences: {
             nodeIntegration: false,
@@ -277,6 +367,15 @@ async function createWindow() {
 
     mainWin.loadFile('db.html');
     mainWin.removeMenu();
+
+    // Khi bấm nút X đóng cửa sổ: thu nhỏ xuống System Tray thay vì tắt hẳn ứng dụng
+    mainWin.on('close', (event) => {
+        if (!isQuitting) {
+            event.preventDefault();
+            mainWin.hide();
+            logE('Cửa sổ đã được ẩn xuống khay hệ thống (System Tray)');
+        }
+    });
 
     // Chỉ chặn điều hướng sang trang web bên ngoài (http/https), cho phép chuyển giữa các trang html nội bộ
     mainWin.webContents.on('will-navigate', (event, url) => {
@@ -324,24 +423,34 @@ async function createWindow() {
 app.whenReady().then(async () => {
     ensureLogDir();
     logE(`Log file: ${LOG_FILE}`);
+    createTray();
     startPython();
     await createWindow();
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+        if (mainWin && !mainWin.isDestroyed()) {
+            showMainWindow();
+        } else if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
         }
     });
 });
 
 app.on('window-all-closed', async () => {
-    logE('window-all-closed → dọn dẹp...');
-    await stopPython();
-    app.quit();
+    if (isQuitting) {
+        logE('window-all-closed → dọn dẹp...');
+        await stopPython();
+        app.quit();
+    }
 });
 
 // Đảm bảo kill Python khi Electron bị force quit
 app.on('before-quit', () => {
+    isQuitting = true;
     logE('before-quit → dọn dẹp...');
+    if (tray) {
+        try { tray.destroy(); } catch {}
+        tray = null;
+    }
     stopPython();
 });

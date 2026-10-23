@@ -34,6 +34,10 @@
         {
           "from": "../unlocker",
           "to": "unlocker"
+        },
+        {
+          "from": "../macro/mavuika.json",
+          "to": "mavuika.json"
         }
       ]
     },
@@ -54,6 +58,9 @@
       "cuscombo.html",
       "cuscombo.css",
       "cuscombo.js",
+      "cuscombo-advanced.html",
+      "cuscombo-advanced.css",
+      "cuscombo-advanced.js",
       "style.css",
       "icon.png",
       "logo.png",

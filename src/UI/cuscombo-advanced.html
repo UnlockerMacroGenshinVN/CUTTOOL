@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>Custom Combo (Chuyên sâu) | Skirk Macro</title>
+    <link rel="stylesheet" href="cuscombo-advanced.css">
+</head>
+<body>
+    <main class="custom-combo-app">
+        <header class="page-header">
+            <div>
+                <p class="eyebrow">SKIRK MACRO / CUSTOM COMBO</p>
+                <h1>Tạo Custom Combo</h1>
+                <p class="subtitle">Xếp phím / chuột thành các clip trên nhiều track như Premiere: clip dài bao nhiêu thì giữ bấy lâu, clip chồng nhau theo chiều dọc thì bấm cùng lúc.</p>
+            </div>
+            <div class="header-actions">
+                <button id="ioModalButton" class="secondary-button io-header-button" type="button">Import / Export</button>
+                <button id="newComboButton" class="secondary-button" type="button">Combo mới</button>
+                <button id="basicModeButton" class="secondary-button" type="button">Cơ bản</button>
+            </div>
+        </header>
+
+        <section class="panel editor-panel" aria-labelledby="timelineTitle">
+            <div class="panel-heading">
+                <div>
+                    <p class="section-kicker">TIMELINE</p>
+                    <h2 id="timelineTitle">Các clip của combo</h2>
+                </div>
+                <span id="timelineCount" class="count-badge">0 clip</span>
+            </div>
+            <details class="help-box">
+                <summary>Cách dùng</summary>
+                <ul>
+                    <li>Kéo clip để dời (ngang = thời điểm, dọc = track). Kéo mép trái / phải để đổi thời gian giữ. Kéo vùng trống để khoanh chọn nhiều clip.</li>
+                    <li>Bấm thước thời gian để đặt đầu phát. Nút <b>Phím</b> / <b>Chuột</b> thêm clip tại đầu phát; nhấp đúp vào chỗ trống để thêm clip phím tại đó.</li>
+                    <li><kbd>C</kbd> cắt clip tại đầu phát, <kbd>I</kbd> / <kbd>O</kbd> đặt đầu / cuối vùng lặp, <kbd>Space</kbd> xem thử, <kbd>←</kbd><kbd>→</kbd> dời clip 1 ms (<kbd>Shift</kbd> 10 ms), <kbd>Ctrl</kbd>+cuộn để phóng to, <kbd>Alt</kbd> khi kéo để tắt hít.</li>
+                    <li><kbd>Ctrl</kbd>+<kbd>C</kbd>/<kbd>X</kbd>/<kbd>V</kbd>/<kbd>D</kbd>/<kbd>Z</kbd>/<kbd>Y</kbd>/<kbd>A</kbd>, <kbd>Delete</kbd> để xóa. Dán luôn đặt tại đầu phát.</li>
+                </ul>
+            </details>
+
+            <div id="toolbar" class="toolbar" role="toolbar" aria-label="Công cụ timeline"></div>
+            <div id="addBar" class="add-bar" aria-label="Thêm clip"></div>
+
+            <div id="blockPanel" class="block-panel" hidden></div>
+
+            <div id="nle" class="nle" tabindex="0" aria-label="Timeline nhiều track">
+                <div id="nleScroll" class="nle-scroll">
+                    <div id="nleInner" class="nle-inner"></div>
+                </div>
+            </div>
+
+            <div id="statusBar" class="nle-status"></div>
+
+            <div id="inspector" class="inspector" hidden aria-live="polite"></div>
+
+            <div class="combo-form">
+                <label class="field-label" for="comboName">Tên Combo</label>
+                <input id="comboName" class="text-input" type="text" maxlength="80" placeholder="Ví dụ: Skirk Combo 1" autocomplete="off">
+
+                <div class="hotkey-heading">
+                    <label class="field-label" for="hotkeyCapture">Hotkey</label>
+                    <span class="field-hint">Không bắt buộc</span>
+                </div>
+                <div class="hotkey-row">
+                    <button id="hotkeyCapture" class="hotkey-capture" type="button">Nhấn để gán phím hoặc nút chuột</button>
+                    <button id="clearHotkey" class="icon-button" type="button" aria-label="Xóa hotkey" title="Xóa hotkey">×</button>
+                </div>
+
+                <details class="python-preview">
+                    <summary>Các bước sẽ chạy (xem trước)</summary>
+                    <pre id="pythonPreview">Chưa có clip.</pre>
+                </details>
+
+                <div class="form-footer">
+                    <span id="savedCount" class="saved-count">0 combo đã lưu</span>
+                    <button id="saveCombo" class="primary-button" type="button">Save Combo</button>
+                </div>
+                <p id="saveStatus" class="save-status" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+    </main>
+
+    <div id="ioModal" class="io-modal-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="ioModalTitle">
+        <div class="io-modal">
+            <div class="io-modal-header">
+                <div>
+                    <p class="section-kicker">MACRO SEQUENCE / IMPORT.MD</p>
+                    <h2 id="ioModalTitle">Import / Export chuỗi lệnh Macro</h2>
+                </div>
+                <button id="ioCloseButton" class="icon-button" type="button" aria-label="Đóng" title="Đóng (Esc)">×</button>
+            </div>
+
+            <p class="io-modal-desc">
+                Định dạng chuỗi lệnh theo quy tắc <code>import.md</code> (ví dụ: <code>{LMBD}{WAITMS:100}{PRESS}w{WAITMS:50}{HOLDMS:80}e{RELEASE}w{LMBU}</code>, <code>{CTRL}a</code>, <code>{ALT}{F4}</code>). Các sự kiện xảy ra đồng thời sẽ tự động được phân bổ lên nhiều track song song.
+            </p>
+
+            <div class="io-options-row">
+                <label class="io-option">
+                    <span class="field-label">Chế độ Import</span>
+                    <select id="ioImportMode" class="text-input io-select">
+                        <option value="replace">Thay thế timeline hiện tại (từ 0 ms)</option>
+                        <option value="insert">Chèn tại đầu phát hiện tại</option>
+                    </select>
+                </label>
+                <label class="io-option io-option-narrow">
+                    <span class="field-label">Giữ mặc định khi gõ phím (ms)</span>
+                    <input id="ioDefaultTapMs" class="text-input" type="number" min="1" max="10000" step="1" value="50">
+                </label>
+                <div class="io-file-actions">
+                    <input id="ioFileInput" type="file" accept=".txt,.md,text/plain" hidden>
+                    <button id="ioLoadFileButton" class="secondary-button" type="button" title="Đọc chuỗi lệnh từ file .txt / .md">Nạp file .txt</button>
+                    <button id="ioDownloadButton" class="secondary-button" type="button" title="Tải chuỗi lệnh hiện tại về máy dạng .txt">Tải file .txt</button>
+                </div>
+            </div>
+
+            <div class="io-textarea-wrap">
+                <div class="io-textarea-bar">
+                    <span class="field-label">Chuỗi lệnh Macro (Import / Export)</span>
+                    <div class="io-textarea-tools">
+                        <button id="ioRefreshExportButton" class="io-mini-btn" type="button" title="Tạo lại chuỗi lệnh từ timeline hiện tại">Lấy từ Timeline</button>
+                        <button id="ioCopyButton" class="io-mini-btn" type="button" title="Sao chép văn bản vào bộ nhớ tạm">Copy văn bản</button>
+                    </div>
+                </div>
+                <textarea id="ioTextarea" class="io-textarea" rows="7" spellcheck="false" placeholder="Ví dụ: {LMBD}{WAITMS:100}{PRESS}w{WAITMS:150}{RELEASE}w{LMBU} hoặc {CTRL}a{WAITMS:50}{HOLDMS:100}r"></textarea>
+            </div>
+
+            <div id="ioValidationBox" class="io-validation" role="status" aria-live="polite"></div>
+
+            <details class="io-syntax-help">
+                <summary>Tra cứu nhanh cú pháp chuẩn (import.md)</summary>
+                <div class="io-syntax-grid">
+                    <div><b>Modifier (kế tiếp):</b> <code>{CTRL}</code> <code>{RCTRL}</code> <code>{ALT}</code> <code>{RALT}</code> <code>{SHIFT}</code> <code>{RSHIFT}</code> <code>{LWIN}</code> <code>{RWIN}</code> <code>{APPS}</code></div>
+                    <div><b>Chuột:</b> <code>{LMB}</code> <code>{RMB}</code> <code>{MMB}</code> <code>{MB4}</code> <code>{MB5}</code> · Nhấn/thả: <code>{LMBD}</code>/<code>{LMBU}</code>, <code>{RMBD}</code>/<code>{RMBU}</code>…</div>
+                    <div><b>Thời gian:</b> <code>{WAITMS:n}</code> <code>{WAIT:n}</code> <code>{WAITMS:x-y}</code> · Giữ phím kế: <code>{HOLDMS:n}</code> <code>{HOLD:n}</code></div>
+                    <div><b>Nhấn / Thả đa track:</b> <code>{PRESS}...{RELEASE}...</code> (bắt buộc có cặp đóng mở tương ứng)</div>
+                    <div><b>Phím đặc biệt:</b> <code>{SPACE}</code> <code>{RETURN}</code> <code>{ESCAPE}</code> <code>{TAB}</code> <code>{BACKSPACE}</code> <code>{DEL}</code> <code>{INS}</code> <code>{HOME}</code> <code>{END}</code> <code>{PGUP}</code> <code>{PGDN}</code></div>
+                    <div><b>Điều hướng &amp; Fn:</b> <code>{UP}</code> <code>{DOWN}</code> <code>{LEFT}</code> <code>{RIGHT}</code> · <code>{F1}</code>…<code>{F24}</code> · <code>{NUM0}</code>…<code>{NUM9}</code></div>
+                </div>
+            </details>
+
+            <div class="io-modal-footer">
+                <button id="ioCancelButton" class="secondary-button" type="button">Đóng</button>
+                <button id="ioImportButton" class="primary-button" type="button">Import vào Timeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="cuscombo-advanced.js"></script>
+</body>
+</html>
