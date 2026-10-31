@@ -5,9 +5,9 @@
 - Giao diện người dùng dễ tiếp cận
 - Lựa chọn các combo mì ăn liền hoặc tự custom combo dựa trên các khối sẵn có
 - Hỗ trợ tạo nhiều combo custom và mỗi combo 1 phím tắt
-- Combo tự chỉnh độ trễ phù hợp đối với FPS người dùng nhập vào
+- Combo Skirk có thể tự chỉnh độ trễ phù hợp đối với FPS người dùng nhập vào
 - Người dùng có thể tự do bật tắt Macro để không ảnh hưởng tới công việc khác mà không cần đóng app
-- Không yêu cầu về chuột xịn
+- Không yêu cầu về gaming gears như chuột hay bàn phím có app
 - Tích hợp unlock Fps và 1 số unlocker (injection) khác
 
 ## CÁCH TẢI
@@ -92,7 +92,6 @@ Trên Linux, phiên bản CLI chuyên dụng (sử dụng kernel-level `evdev` &
 ## Các nguồn tham khảo
 
 - Fufu.UnlockerIsland
-- Các setup Macro app Xmouse trên bilibili Trung
 
 ## Liên hệ
 
