@@ -3,7 +3,7 @@
 // Bạn có thể chỉnh sửa: Tiêu đề, Tóm tắt, Nội dung chi tiết, Hình ảnh tại đây!
 // =============================================================================
 window.announcementConfig = {
-    title: "v1.2 - Cập nhật Giao diện Mới + Tính năng mới",
+    title: "v1.2.1 - Cập nhật Giao diện Mới + Tính năng mới",
 
     summary: "Thêm Custom macro.",
 
@@ -13,7 +13,7 @@ window.announcementConfig = {
 
     tag: "BẢN TIN MỚI",
 
-    content: `Peak update v1.2!
+    content: `Peak update v1.2.1!
 
 Nội dung phiên bản cập nhật:
 - Tính năng macro mới (idea: tuun.ahh_), cho phép tạo macro tuỳ chỉnh ngoài Skirk, có thể chia sẻ hoặc nhập mã từ bạn bè.
