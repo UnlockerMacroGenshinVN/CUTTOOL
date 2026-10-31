@@ -736,45 +736,271 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const heroImage = document.getElementById('hero-image');
     const heroContainer = document.getElementById('hero-container');
+    const heroHeaderLayer = document.getElementById('heroHeaderLayer');
     const bannerTitleContainer = document.getElementById('bannerTitleContainer');
     const bannerAppName = document.getElementById('bannerAppName');
+    const homeContentPanel = document.getElementById('homeContentPanel');
+    const heroMiniButtons = document.getElementById('heroMiniButtons');
+    const heroAnnouncementCard = document.getElementById('heroAnnouncementCard');
 
-    if (heroImage && heroContainer) {
-        let scrollTicking = false;
-        let isBannerCompact = false;
+    // ── State: Hero Mode (at top) vs Content Mode (panel visible) ─────────
+    let isContentVisible = false;
+    let isAutoScrolling = false;
 
-        window.addEventListener('scroll', () => {
-            if (window.activeTab !== 'home' || scrollTicking) return;
-            scrollTicking = true;
+    // ── Announcement Feed Data & Modal Manager (Separate Config File) ────
+    function getAnnouncementData() {
+        if (window.announcementConfig && typeof window.announcementConfig === 'object') {
+            return window.announcementConfig;
+        }
+        return {
+            title: "Skirk Macro v1.2 - Cập nhật Giao diện Mới",
+            summary: "Nâng cấp hình nền 16:9,  điều khiển tự động trượt che nền khi cuộn và thanh tiện ích truy cập nhanh.",
+            image: "assets/defbanner.png",
+            date: "31/10/2026",
+            tag: "BẢN TIN MỚI",
+            content: "Chào mừng bạn đến với phiên bản Skirk Macro v1.2!"
+        };
+    }
 
-            requestAnimationFrame(() => {
-                scrollTicking = false;
-                if (window.activeTab !== 'home') return;
+    function renderHomeFeed() {
+        const data = getAnnouncementData();
+        const titleEl = document.getElementById('heroAnnouncementTitle');
+        const summaryEl = document.getElementById('heroAnnouncementSummary');
+        const dateEl = document.getElementById('heroAnnouncementDate');
+        const tagEl = document.getElementById('heroAnnouncementTag');
+        const imgEl = document.getElementById('heroAnnouncementImg');
 
-                const scrollY = window.scrollY;
-                const containerHeight = heroContainer.offsetHeight || 320;
-                let opacity = 1 - (scrollY / (containerHeight * 0.8));
-                opacity = Math.max(0, Math.min(1, opacity));
-                heroImage.style.opacity = opacity;
+        if (titleEl) titleEl.textContent = data.title || "";
+        if (summaryEl) summaryEl.textContent = data.summary || "";
+        if (dateEl) dateEl.textContent = data.date || "";
+        if (tagEl) tagEl.textContent = data.tag || "THÔNG BÁO";
+        if (imgEl && data.image) {
+            imgEl.style.backgroundImage = `url("${data.image}")`;
+        }
+    }
 
-                // Chỉ cập nhật class khi vượt ngưỡng 50px để tránh kích hoạt lại Tailwind MutationObserver liên tục
-                const shouldCompact = scrollY > 50;
-                if (shouldCompact !== isBannerCompact && bannerTitleContainer && bannerAppName) {
-                    isBannerCompact = shouldCompact;
-                    if (shouldCompact) {
-                        bannerTitleContainer.classList.remove('flex-col', 'top-1/2', '-translate-y-1/2', 'items-start', 'gap-3');
-                        bannerTitleContainer.classList.add('flex-row', 'items-center', 'top-6', 'gap-2');
-                        bannerAppName.classList.remove('text-5xl', 'md:text-6xl');
-                        bannerAppName.classList.add('text-3xl', 'md:text-4xl');
-                    } else {
-                        bannerTitleContainer.classList.add('flex-col', 'top-1/2', '-translate-y-1/2', 'items-start', 'gap-3');
-                        bannerTitleContainer.classList.remove('flex-row', 'items-center', 'top-6', 'gap-2');
-                        bannerAppName.classList.add('text-5xl', 'md:text-6xl');
-                        bannerAppName.classList.remove('text-3xl', 'md:text-4xl');
-                    }
+    function openFeedModal() {
+        const data = getAnnouncementData();
+        const modal = document.getElementById('feedModal');
+        const modalTitle = document.getElementById('feedModalTitle');
+        const modalTag = document.getElementById('feedModalTag');
+        const modalDate = document.getElementById('feedModalDate');
+        const modalImg = document.getElementById('feedModalImg');
+        const modalContent = document.getElementById('feedModalContent');
+
+        if (!modal) return;
+
+        if (modalTitle) modalTitle.textContent = data.title || "";
+        if (modalTag) modalTag.textContent = data.tag || "THÔNG BÁO";
+        if (modalDate) modalDate.textContent = data.date || "";
+        if (modalImg && data.image) modalImg.style.backgroundImage = `url("${data.image}")`;
+        
+        if (modalContent) {
+            // Hiển thị nội dung chi tiết thuần text, bảo toàn xuống dòng rõ ràng, không có icon
+            const lines = (data.content || "").split('\n');
+            modalContent.innerHTML = lines.map(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return '<div class="h-2"></div>';
+                if (trimmed.startsWith('- ')) {
+                    return `<div class="flex items-start gap-2 pl-2"><span class="text-teal font-bold">•</span><span>${trimmed.substring(2)}</span></div>`;
                 }
+                return `<p>${trimmed}</p>`;
+            }).join('');
+        }
+
+        modal.classList.remove('hidden');
+    }
+
+    function closeFeedModal() {
+        const modal = document.getElementById('feedModal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    if (heroAnnouncementCard) {
+        heroAnnouncementCard.addEventListener('click', openFeedModal);
+    }
+
+    const closeFeedModalTopBtn = document.getElementById('closeFeedModalTopBtn');
+    if (closeFeedModalTopBtn) closeFeedModalTopBtn.addEventListener('click', closeFeedModal);
+
+    const closeFeedModalBtn = document.getElementById('closeFeedModalBtn');
+    if (closeFeedModalBtn) closeFeedModalBtn.addEventListener('click', closeFeedModal);
+
+    const feedModal = document.getElementById('feedModal');
+    if (feedModal) {
+        feedModal.addEventListener('click', (e) => {
+            if (e.target === feedModal) closeFeedModal();
+        });
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && feedModal && !feedModal.classList.contains('hidden')) {
+            closeFeedModal();
+        }
+    });
+
+    renderHomeFeed();
+
+    // Prepare content boxes with staggered animations
+    const contentBoxes = homeContentPanel ? homeContentPanel.querySelectorAll('.box-half-float, .boxes-clearfix') : [];
+    contentBoxes.forEach((box, i) => {
+        box.classList.add('home-box-animate');
+        box.style.transitionDelay = `${i * 0.08}s`;
+    });
+
+    function getHeroHeight() {
+        return (heroContainer ? heroContainer.offsetHeight : 0) || window.innerHeight || 600;
+    }
+
+    function showContent() {
+        if (isContentVisible) return;
+        isContentVisible = true;
+
+        if (heroHeaderLayer) {
+            heroHeaderLayer.classList.remove('at-top');
+            heroHeaderLayer.classList.add('scrolled');
+        }
+        if (heroMiniButtons) {
+            heroMiniButtons.classList.add('hidden-btns');
+        }
+        if (heroAnnouncementCard) {
+            heroAnnouncementCard.classList.add('hidden-card');
+        }
+        if (homeContentPanel) {
+            homeContentPanel.classList.remove('content-hidden');
+            homeContentPanel.classList.add('content-visible');
+        }
+
+        // Animate content boxes in
+        contentBoxes.forEach(box => box.classList.remove('visible'));
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                contentBoxes.forEach(box => box.classList.add('visible'));
+            }, 100);
+        });
+    }
+
+    function hideContent() {
+        if (!isContentVisible) return;
+        isContentVisible = false;
+
+        if (heroHeaderLayer) {
+            heroHeaderLayer.classList.add('at-top');
+            heroHeaderLayer.classList.remove('scrolled');
+        }
+        if (heroMiniButtons) {
+            heroMiniButtons.classList.remove('hidden-btns');
+        }
+        if (heroAnnouncementCard) {
+            heroAnnouncementCard.classList.remove('hidden-card');
+        }
+        if (homeContentPanel) {
+            homeContentPanel.classList.add('content-hidden');
+            homeContentPanel.classList.remove('content-visible');
+        }
+
+        contentBoxes.forEach(box => box.classList.remove('visible'));
+    }
+
+    window.resetHomeToTop = () => {
+        hideContent();
+        window.scrollTo(0, 0);
+    };
+
+    // ── Scroll Listener: 25% threshold detection ─────────────────────────
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+        if (window.activeTab !== 'home' || scrollTicking) return;
+        scrollTicking = true;
+
+        requestAnimationFrame(() => {
+            scrollTicking = false;
+            if (window.activeTab !== 'home') return;
+
+            const scrollY = window.scrollY;
+            const heroHeight = getHeroHeight();
+            const threshold = heroHeight * 0.25; // 25% threshold
+
+            // Fade hero image slightly as you scroll down
+            if (heroImage) {
+                let opacity = 1 - (scrollY / (heroHeight * 0.85));
+                heroImage.style.opacity = Math.max(0, Math.min(1, opacity));
+            }
+
+            if (isAutoScrolling) return;
+
+            // When scrolling down past 25% -> automatically show content and smooth scroll to cover hero
+            if (scrollY >= threshold && !isContentVisible) {
+                showContent();
+                isAutoScrolling = true;
+                window.scrollTo({ top: heroHeight, behavior: 'smooth' });
+                setTimeout(() => { isAutoScrolling = false; }, 650);
+            }
+            // When scrolling up past 25% -> automatically hide content and smooth scroll back to top
+            else if (scrollY < threshold && isContentVisible) {
+                hideContent();
+                isAutoScrolling = true;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => { isAutoScrolling = false; }, 650);
+            }
+        });
+    }, { passive: true });
+
+    // ── Mouse Wheel Gesture Listener ──────────────────────────────────────
+    window.addEventListener('wheel', (e) => {
+        if (window.activeTab !== 'home' || isAutoScrolling) return;
+        const heroHeight = getHeroHeight();
+
+        // At top: user rolls mouse wheel down -> automatically slide up content
+        if (!isContentVisible && e.deltaY > 15 && window.scrollY < 60) {
+            showContent();
+            isAutoScrolling = true;
+            window.scrollTo({ top: heroHeight, behavior: 'smooth' });
+            setTimeout(() => { isAutoScrolling = false; }, 650);
+        }
+        // At top of content: user rolls mouse wheel up -> automatically return to hero
+        else if (isContentVisible && e.deltaY < -15 && window.scrollY <= heroHeight + 15) {
+            hideContent();
+            isAutoScrolling = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { isAutoScrolling = false; }, 650);
+        }
+    }, { passive: true });
+
+    // ── Hero Mini Buttons: click -> smooth transition & jump to box ──────
+    if (heroMiniButtons) {
+        heroMiniButtons.querySelectorAll('.hero-mini-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetId = btn.getAttribute('data-scroll-target');
+                const heroHeight = getHeroHeight();
+
+                showContent();
+                isAutoScrolling = true;
+                window.scrollTo({
+                    top: heroHeight,
+                    behavior: 'smooth'
+                });
+
+                setTimeout(() => {
+                    isAutoScrolling = false;
+                    if (targetId) {
+                        const targetEl = document.getElementById(targetId);
+                        if (targetEl) {
+                            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            // Highlight effect
+                            targetEl.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+                            targetEl.style.boxShadow = '0 0 0 2px rgba(45, 212, 191, 0.7), 0 0 28px rgba(45, 212, 191, 0.25)';
+                            targetEl.style.borderColor = 'rgba(45, 212, 191, 0.8)';
+                            setTimeout(() => {
+                                targetEl.style.boxShadow = '';
+                                targetEl.style.borderColor = '';
+                            }, 1600);
+                        }
+                    }
+                }, 500);
             });
-        }, { passive: true });
+        });
     }
 
     // Bind FPS Save button & Enter key

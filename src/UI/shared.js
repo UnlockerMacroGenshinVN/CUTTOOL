@@ -1,8 +1,4 @@
-// ── shared.js ─────────────────────────────────────────────────────────────────
-// Dùng chung cho tất cả tab: SPA tab router + quản lý trạng thái RUN MACRO + START GAME
-// ─────────────────────────────────────────────────────────────────────────────
 
-// Xóa toàn bộ cài đặt cũ lưu trong localStorage từ chế độ dev khi lên bản 1.1.3
 try {
     if (!localStorage.getItem("clean_state_v1_1_3")) {
         localStorage.clear();
@@ -106,6 +102,7 @@ function switchTab(tabName, updateHash = true) {
 
     // Đồng bộ giao diện ngay lập tức từ bộ nhớ mà không cần reload
     if (tabName === 'home') {
+        if (typeof window.resetHomeToTop === 'function') window.resetHomeToTop();
         if (typeof renderBoundCombosFromMemory === 'function') renderBoundCombosFromMemory();
         if (typeof syncDbUnlockerInputsFromMemory === 'function') syncDbUnlockerInputsFromMemory();
     } else if (tabName === 'macros') {

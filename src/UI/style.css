@@ -188,3 +188,191 @@ body {
         transform: translateY(0) scale(1);
     }
 }
+
+/* ── Hero Mini Quick-Access Buttons ───────────────────────────────────── */
+.hero-mini-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(45, 212, 191, 0.4);
+    background: rgba(9, 13, 22, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: rgba(231, 237, 248, 0.9);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    white-space: nowrap;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-mini-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(45, 212, 191, 0.2) 0%, transparent 65%);
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.hero-mini-btn:hover {
+    background: rgba(45, 212, 191, 0.18);
+    border-color: rgba(45, 212, 191, 0.85);
+    color: #2dd4bf;
+    box-shadow: 0 6px 24px rgba(45, 212, 191, 0.3), 0 0 0 1px rgba(45, 212, 191, 0.25);
+    transform: translateY(-3px);
+}
+
+.hero-mini-btn:hover::before {
+    opacity: 1;
+}
+
+.hero-mini-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+.hero-mini-btn .material-symbols-outlined {
+    font-size: 17px;
+}
+
+/* ── Top Floating Header (CutTool + Controls, always visible) ────────── */
+#heroHeaderLayer {
+    height: 72px;
+}
+
+#heroHeaderLayer.at-top {
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+}
+
+#heroHeaderLayer.at-top #bannerTitleContainer {
+    transform: translateY(18vh);
+}
+
+#heroHeaderLayer.at-top #bannerAppName {
+    font-size: 3.75rem; /* ~60px */
+    line-height: 1.1;
+}
+
+#heroHeaderLayer.at-top #bannerAppVersion {
+    font-size: 0.875rem;
+    padding: 4px 12px;
+}
+
+#heroHeaderLayer.scrolled {
+    background: rgba(9, 13, 22, 0.92);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+#heroHeaderLayer.scrolled #bannerTitleContainer {
+    transform: translateY(0);
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+#heroHeaderLayer.scrolled #bannerAppName {
+    font-size: 1.75rem; /* ~28px */
+    line-height: 1.2;
+}
+
+#heroHeaderLayer.scrolled #bannerAppVersion {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+}
+
+/* ── Hero Announcement Card (Bottom-left of Hero View, under CutTool) ── */
+.hero-announcement-card {
+    position: fixed;
+    bottom: 96px; /* Đẩy lên trên */
+    left: 20px;
+    z-index: 30;
+    max-width: 440px;
+    width: calc(50% - 40px);
+    height: 136px;
+    border-radius: 16px;
+    border: 1px solid rgba(45, 212, 191, 0.35);
+    background: rgba(9, 13, 22, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s, box-shadow 0.25s;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .hero-announcement-card {
+        left: calc(280px + 20px); /* Dịch sang trái (cách sidebar 20px thay vì 32px) */
+    }
+}
+
+.hero-announcement-card:hover {
+    border-color: rgba(45, 212, 191, 0.8);
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.7), 0 0 24px rgba(45, 212, 191, 0.3);
+    transform: translateY(-2px);
+}
+
+.hero-announcement-card:active {
+    transform: translateY(0) scale(0.99);
+}
+
+.hero-announcement-card.hidden-card {
+    opacity: 0 !important;
+    transform: translateY(24px) !important;
+    pointer-events: none !important;
+}
+
+/* ── Home Content Panel Visibility & Smooth Transition ───────────────── */
+#homeContentPanel {
+    transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+#homeContentPanel.content-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(90px) !important;
+}
+
+#homeContentPanel.content-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+}
+
+/* Content boxes fade-in animation when panel opens */
+.home-box-animate {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.home-box-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mini buttons hide animation */
+#heroMiniButtons {
+    transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#heroMiniButtons.hidden-btns {
+    opacity: 0 !important;
+    transform: translateY(24px) !important;
+    pointer-events: none !important;
+}

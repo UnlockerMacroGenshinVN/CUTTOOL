@@ -127,54 +127,144 @@
 
     <main class="flex-1 w-full md:ml-[280px] relative">
       <!-- ==================== VIEW 1: TRANG CHÍNH ==================== -->
-      <section id="view-home" class="w-full">
+      <section id="view-home" class="w-full relative">
+        <!-- 1. Hero Sticky Wallpaper (16:9, fills screen at start) -->
         <div
-          class="sticky top-0 w-full h-[320px] z-0 overflow-hidden bg-surface-container-lowest group"
+          class="sticky top-0 w-full h-screen min-h-[500px] z-0 overflow-hidden bg-surface-container-lowest"
           id="hero-container"
         >
           <div
-            class="w-full h-full bg-cover bg-center object-cover transform scale-105"
+            class="w-full h-full bg-cover bg-center object-cover transform scale-105 transition-all duration-500"
             id="hero-image"
             style="background-image: url(&quot;assets/defbanner.png&quot;)"
           ></div>
           <div
-            class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none"
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent pointer-events-none"
           ></div>
+        </div>
 
-          <!-- Banner Title & Controls -->
-          <div id="bannerTitleContainer" class="absolute top-1/2 left-8 -translate-y-1/2 z-20 flex flex-col items-start gap-3 transition-all duration-300 pointer-events-none">
-            <h2 id="bannerAppName" class="text-5xl md:text-6xl font-black text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tight transition-all duration-300">CutTool</h2>
-            <p id="bannerAppVersion" class="text-white text-sm md:text-base font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] px-3 py-1 bg-teal/80 rounded-lg transition-all duration-300">v1.1.3</p>
+        <!-- 2. Sticky Header Layer: CutTool + Version + Controls (ALWAYS ON TOP z-30) -->
+        <header
+          id="heroHeaderLayer"
+          class="at-top fixed top-0 left-0 md:left-[280px] right-0 z-30 transition-all duration-500 pointer-events-none"
+        >
+          <div
+            id="heroHeaderInner"
+            class="w-full px-6 md:px-8 py-4 flex items-center justify-between transition-all duration-500"
+          >
+            <!-- Banner Title & Controls: Glides smoothly from center to header -->
+            <div
+              id="bannerTitleContainer"
+              class="flex flex-col items-start gap-2.5 pointer-events-auto transition-all duration-500 ease-out"
+            >
+              <h2
+                id="bannerAppName"
+                class="font-black text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] tracking-tight transition-all duration-400"
+              >CutTool</h2>
+              <p
+                id="bannerAppVersion"
+                class="text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] bg-teal/80 rounded-lg transition-all duration-400"
+              >v1.2</p>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div id="bannerControls" class="flex items-center gap-2 pointer-events-auto">
+              <!-- Check for Update Bell Button -->
+              <button
+                id="checkUpdateBtn"
+                title="Kiểm tra cập nhật"
+                class="relative bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface-variant hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
+              >
+                <span id="updateBellIcon" class="material-symbols-outlined text-lg">notifications</span>
+                <span id="updateBadgeDot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-surface-container-highest animate-pulse"></span>
+              </button>
+
+              <button
+                id="resetBannerBtn"
+                title="Đặt lại ảnh bìa mặc định"
+                class="hidden bg-surface-container-highest/90 hover:bg-red-500/20 text-on-surface-variant hover:text-red-400 border border-outline/40 hover:border-red-500/40 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
+              >
+                <span class="material-symbols-outlined text-base">restart_alt</span>
+              </button>
+
+              <button
+                id="changeBannerBtn"
+                title="Thay đổi ảnh bìa trang chính"
+                class="bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg px-3 py-2 text-xs font-semibold shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              >
+                <span class="material-symbols-outlined text-base">photo_camera</span>
+                <span>Đổi ảnh bìa</span>
+              </button>
+            </div>
           </div>
-          <div class="absolute top-4 right-6 z-20 flex items-center gap-2">
-            <!-- Check for Update Bell Button -->
-            <button
-              id="checkUpdateBtn"
-              title="Kiểm tra cập nhật"
-              class="relative bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface-variant hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
-            >
-              <span id="updateBellIcon" class="material-symbols-outlined text-lg">notifications</span>
-              <span id="updateBadgeDot" class="hidden absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-surface-container-highest animate-pulse"></span>
-            </button>
+        </header>
+        <input type="file" id="bannerFileInput" accept="image/*" class="hidden" />
 
-            <button
-              id="resetBannerBtn"
-              title="Đặt lại ảnh bìa mặc định"
-              class="hidden bg-surface-container-highest/90 hover:bg-red-500/20 text-on-surface-variant hover:text-red-400 border border-outline/40 hover:border-red-500/40 rounded-lg p-2 text-xs font-semibold shadow-lg transition-all flex items-center justify-center cursor-pointer active:scale-95"
-            >
-              <span class="material-symbols-outlined text-base">restart_alt</span>
-            </button>
+        <!-- 3. Announcement Card (bottom-left of initial hero view, under CutTool) -->
+        <div
+          id="heroAnnouncementCard"
+          class="hero-announcement-card cursor-pointer shadow-2xl group"
+          title="Nhấn để xem thông báo chi tiết"
+        >
+          <!-- Dimmed Background Image -->
+          <div
+            id="heroAnnouncementImg"
+            class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105 opacity-35 group-hover:opacity-45"
+            style="background-image: url('assets/defbanner.png');"
+          ></div>
+          <!-- Dark Gradient Overlay for optimal contrast -->
+          <div class="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-background/30"></div>
 
-            <button
-              id="changeBannerBtn"
-              title="Thay đổi ảnh bìa trang chính"
-              class="bg-surface-container-highest/90 hover:bg-teal/20 text-on-surface hover:text-teal border border-outline/40 hover:border-teal/50 rounded-lg px-3 py-2 text-xs font-semibold shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-            >
-              <span class="material-symbols-outlined text-base">photo_camera</span>
-              <span>Đổi ảnh bìa</span>
-            </button>
+          <!-- Overlaid Content (No icons on text) -->
+          <div class="relative z-10 h-full p-4 md:p-5 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2">
+              <span
+                id="heroAnnouncementTag"
+                class="px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase bg-teal/20 text-teal border border-teal/40 rounded-md shrink-0"
+              >
+                BẢN TIN MỚI
+              </span>
+              <span id="heroAnnouncementDate" class="text-xs text-on-surface-variant font-medium">31/10/2026</span>
+            </div>
+
+            <div class="mt-auto">
+              <h3
+                id="heroAnnouncementTitle"
+                class="text-base md:text-lg font-bold text-white group-hover:text-teal transition-colors tracking-tight line-clamp-1 drop-shadow-md mb-1"
+              >
+                Skirk Macro v1.2 - Cập nhật Giao diện Mới
+              </h3>
+              <p
+                id="heroAnnouncementSummary"
+                class="text-xs text-on-surface-variant/90 line-clamp-2 font-normal leading-relaxed"
+              >
+                Nâng cấp hình nền 16:9, bảng điều khiển tự động trượt che nền khi cuộn và thanh tiện ích truy cập nhanh.
+              </p>
+            </div>
           </div>
-          <input type="file" id="bannerFileInput" accept="image/*" class="hidden" />
+        </div>
+
+        <!-- 4. 4 Mini Quick-Access Buttons (bottom-right of initial hero view) -->
+        <div
+          id="heroMiniButtons"
+          class="fixed bottom-8 right-8 z-30 flex items-center gap-2.5 transition-all duration-400"
+        >
+          <button class="hero-mini-btn" data-scroll-target="boundCombosBox" title="Combo đang sử dụng">
+            <span class="material-symbols-outlined text-sm">keyboard</span>
+            <span>Combo</span>
+          </button>
+          <button class="hero-mini-btn" data-scroll-target="statusFpsBox" title="Trạng thái Macro">
+            <span class="material-symbols-outlined text-sm">settings</span>
+            <span>Trạng thái</span>
+          </button>
+          <button class="hero-mini-btn" data-scroll-target="unlockerBox" title="Mở khoá FPS">
+            <span class="material-symbols-outlined text-sm">speed</span>
+            <span>FPS</span>
+          </button>
+          <button class="hero-mini-btn" data-scroll-target="gamePathBox" title="Đường dẫn Game">
+            <span class="material-symbols-outlined text-sm">sports_esports</span>
+            <span>Game</span>
+          </button>
         </div>
 
         <!-- Update Available Modal -->
@@ -215,8 +305,60 @@
           </div>
         </div>
 
+        <!-- Feed Detail Modal (Full Announcement View - Pure Text, No Icons on Content) -->
+        <div id="feedModal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-[fadeIn_0.2s_ease-out]">
+          <div class="bg-surface-container-high rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl border border-outline/40 flex flex-col max-h-[90vh]">
+            <!-- Modal Header Image -->
+            <div class="relative w-full h-52 shrink-0 bg-surface-container-lowest overflow-hidden">
+              <div
+                id="feedModalImg"
+                class="w-full h-full bg-cover bg-center"
+                style="background-image: url('assets/defbanner.png');"
+              ></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-surface-container-high via-surface-container-high/40 to-transparent"></div>
+              
+              <!-- Close Button (Top right on image) -->
+              <button
+                id="closeFeedModalTopBtn"
+                class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 text-white/80 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/20 active:scale-90"
+                title="Đóng"
+              >
+                <span class="material-symbols-outlined text-xl">close</span>
+              </button>
+
+              <!-- Modal Title in Image Overlay (No icons on text) -->
+              <div class="absolute bottom-4 left-6 right-6">
+                <div class="flex items-center gap-2.5 mb-1.5">
+                  <span id="feedModalTag" class="px-2.5 py-0.5 text-[11px] font-bold tracking-wider uppercase bg-teal text-black rounded-md">BẢN TIN MỚI</span>
+                  <span id="feedModalDate" class="text-xs text-on-surface-variant font-medium">31/10/2026</span>
+                </div>
+                <h3 id="feedModalTitle" class="text-xl md:text-2xl font-black text-white tracking-tight drop-shadow-md">
+                  Skirk Macro v1.2 - Cập nhật Giao diện Mới
+                </h3>
+              </div>
+            </div>
+
+            <!-- Modal Scrollable Content -->
+            <div class="p-6 overflow-y-auto flex-1 text-sm leading-relaxed text-on-surface-variant space-y-4" id="feedModalContent">
+              <!-- Content will be injected dynamically -->
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-surface-container-highest/50 border-t border-outline/20 flex justify-end">
+              <button
+                id="closeFeedModalBtn"
+                class="px-5 py-2 rounded-xl bg-teal/15 hover:bg-teal/25 text-teal border border-teal/40 text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Đã hiểu</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Lower Content Panel (Hidden initially; slides up to cover background, leaving top bar clear) -->
         <div
-          class="relative z-10 w-full min-h-screen bg-background rounded-t-[32px] pt-12 pb-32 shadow-[0_-12px_40px_rgba(0,0,0,0.5)] mt-[-40px]"
+          id="homeContentPanel"
+          class="content-hidden relative z-20 w-full min-h-screen bg-background rounded-t-[32px] pt-28 pb-32 shadow-[0_-16px_48px_rgba(0,0,0,0.7)]"
         >
           <div
             class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop"
@@ -311,6 +453,7 @@
             <!-- Row 2: Unlocker & Game Config -->
             <div class="w-full boxes-clearfix mt-6">
               <div
+                id="unlockerBox"
                 class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-colors duration-200"
                 style="margin-right: 32px"
               >
@@ -343,6 +486,7 @@
               </div>
 
               <div
+                id="gamePathBox"
                 class="bg-surface-container/90 border border-outline/30 hover:border-teal/40 rounded-xl p-6 shadow-xl box-half-float flex flex-col justify-between transition-colors duration-200"
               >
                 <div>
@@ -947,6 +1091,7 @@
     </main>
 
     <!-- External JavaScript -->
+    <script src="announcement.js"></script>
     <script src="shared.js"></script>
     <script src="db.js"></script>
     <script src="cb.js"></script>
