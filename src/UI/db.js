@@ -753,12 +753,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return window.announcementConfig;
         }
         return {
-            title: "v1.2.1 - Cập nhật Giao diện Mới + Tính năng mới",
+            title: "v1.2.2 - Cập nhật Giao diện Mới + Tính năng mới",
             summary: "Thêm Custom macro.",
             image: "assets/update.png",
             date: "31/10/2026",
             tag: "BẢN TIN MỚI",
-            content: `Peak update v1.2.1!\n\nNội dung phiên bản cập nhật:\n- Tính năng macro mới (idea: tuun.ahh_), cho phép tạo macro tuỳ chỉnh ngoài Skirk, có thể chia sẻ hoặc nhập mã từ bạn bè.\n- Sửa đổi giao diện trang chính, tối ưu hoá trải nghiệm người dùng.\n- Bổ sung 2 Macro có sẵn (cre: tuun.ahh_)\n`
+            content: `Peak update v1.2.2!\n\nNội dung phiên bản cập nhật:\n- Tính năng macro mới (idea: tuun.ahh_), cho phép tạo macro tuỳ chỉnh ngoài Skirk, có thể chia sẻ hoặc nhập mã từ bạn bè.\n- Sửa đổi giao diện trang chính, tối ưu hoá trải nghiệm người dùng.\n- Bổ sung 2 Macro có sẵn (cre: tuun.ahh_)\n`
         };
     }
 
